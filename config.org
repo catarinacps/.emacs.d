@@ -3889,12 +3889,12 @@ c-like languages):
   :mode
   (("\\.c\\'"    . c-mode)
    ("\\.h\\'"    . c-mode)
-   ("\\.C"       . c++-mode)
-   ("\\.H"       . c++-mode)
-   ("\\.c++"     . c++-mode)
-   ("\\.h++"     . c++-mode)
-   ("\\.cpp"     . c++-mode)
-   ("\\.hpp"     . c++-mode)
+   ("\\.C\\'"    . c++-mode)
+   ("\\.H\\'"    . c++-mode)
+   ("\\.c++\\'"  . c++-mode)
+   ("\\.h++\\'"  . c++-mode)
+   ("\\.cpp\\'"  . c++-mode)
+   ("\\.hpp\\'"  . c++-mode)
    ("\\.awk\\'"  . awk-mode)
    ("\\.java\\'" . java-mode))
   :preface
