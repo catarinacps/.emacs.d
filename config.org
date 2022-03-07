@@ -741,7 +741,7 @@ Silly names for easier path usage.
 #+begin_src emacs-lisp :tangle yes
 (eval-and-compile
   (defconst current-user (getenv "USER") "The current user.")
-  (defconst home-dir (expand-file-name current-user "/home/") "The user home dir.")
+  (defconst home-dir (expand-file-name current-user "~/") "The user home dir.")
 
   (defconst root-dir (expand-file-name user-emacs-directory) "The root dir of Emacs.")
   (defconst var-user-dir (expand-file-name "var" root-dir) "The temporaries directory.")
