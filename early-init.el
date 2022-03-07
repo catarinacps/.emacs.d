@@ -1,5 +1,11 @@
 ;;; early-init.el --- The init before init -*- lexical-binding: t -*-
 
+;; change the default eln-cache directory
+(when (fboundp 'startup-redirect-eln-cache)
+  (startup-redirect-eln-cache
+   (convert-standard-filename
+    (expand-file-name  "var/eln-cache/" user-emacs-directory))))
+
 (setq gc-cons-threshold (* 1024 1024 16) ; big gc threshold so we fast(er)
       load-prefer-newer t
       inhibit-x-resources t
@@ -20,12 +26,6 @@
                             (bottom-divider-width . 1)))
 
 (custom-set-faces '(fixed-pitch ((t :family unspecified))))
-
-;; change the default eln-cache directory
-(when (fboundp 'startup-redirect-eln-cache)
-  (startup-redirect-eln-cache
-   (convert-standard-filename
-    (expand-file-name  "var/eln-cache/" user-emacs-directory))))
 
 (setq inhibit-startup-screen t
       blink-cursor-mode nil
