@@ -1,0 +1,8 @@
+*.elc
+*~
+*.eln
+var/
+etc/
+straight/
+.cask
+/config.el
