@@ -24,7 +24,7 @@
 
   ;; if we ended up loading the .el directly, byte-compile and also native compile
   (unless (file-exists-p compiled-config)
-    (async-byte-compile-file tangled-config)
+    (byte-compile-file tangled-config)
     (native-compile-async tangled-config)))
 
 ;; set a sane gc-threshold again
