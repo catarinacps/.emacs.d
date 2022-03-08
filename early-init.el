@@ -1,4 +1,13 @@
 ;;; early-init.el --- The init before init -*- lexical-binding: t -*-
+;;
+;; Copyright © 2011-2018 Bozhidar Batsov
+;;
+;; Author: Henrique Silva <hcpsilva@inf.ufrgs.br>
+;; Keywords: startup
+
+;;; Commentary:
+
+;;; Code:
 
 ;; change the default eln-cache directory
 (when (fboundp 'startup-redirect-eln-cache)
@@ -33,3 +42,4 @@
       tab-bar-separator " "
       tab-bar-border 1)
 
+;;; early-init.el ends here
