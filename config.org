@@ -738,8 +738,9 @@ Silly names for easier path usage.
   (defconst home-dir (getenv "HOME") "The user home dir.")
 
   (defconst root-dir (expand-file-name user-emacs-directory) "The root dir of Emacs.")
+  (defconst lisp-dir (expand-file-name "lisp" root-dir) "The extra emacs-lisp directory.")
   (defconst var-user-dir (expand-file-name "var" root-dir) "The temporaries directory.")
-  (defconst vendor-user-dir (expand-file-name "vendor" root-dir) "The random .el directory.")
+  (defconst vendor-user-dir (expand-file-name "vendor" lisp-dir) "The externally .el directory.")
   (defconst proj-user-dir (expand-file-name "Repositories" home-dir) "Default projects directory.")
   (defconst onedrive-user-dir (expand-file-name "OneDrive" home-dir) "Default OneDrive path."))
 #+end_src
