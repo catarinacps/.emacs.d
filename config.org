@@ -1628,6 +1628,8 @@ Built-in replacement for =projectile=???
 (use-package project
   :straight (:type built-in)
   :commands project-root
+  :custom
+  (project-vc-ignores '(".DS_Store"))
   :general
   (:keymaps 'hcps/leader-map
    "p" '(:keymap project-prefix-map)))
