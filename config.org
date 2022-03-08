@@ -3895,10 +3895,12 @@ types that CUDA introduces. So, let's install =cuda-mode=:
 
 #+begin_src emacs-lisp :tangle yes
 (use-package cuda-mode
+  :straight
+  (cuda-mode
+   :type git
+   :host github
+   :repo "hcpsilva/cuda-mode")
   :mode "\\.cu\\'"
-  :commands cuda
-  :hook
-  (cuda-mode-hook . (lambda () (run-hooks 'c++-mode-hook)))
   :custom
   (cuda-font-lock-keywords 'cuda-font-lock-keywords-3))
 #+end_src
