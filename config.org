@@ -189,9 +189,9 @@ You can find the following packages in this configuration file:
 #+begin_src bash :exports results :results output list org
 [ ! -f 'config.el' ] && emacs --batch --eval "(require 'org)" --eval '(org-babel-tangle-file "config.org")'
 
-grep -E '(^\(use-package .*|^ *:straight .*)' config.el |
+gawk '/\(use-package |:straight/ { print $2, $3 }' config.el |
     tr -d '()' |
-    awk '!/\<built-in\>|\<nil\>|\<t\>/ {print $2}' |
+    gawk '!/\<built-in\>|\<nil\>|\<t\>/ { print $1 }' |
     sort -u
 #+end_src
 
