@@ -950,8 +950,7 @@ Some setting up before we start configuring the packages themselves.
         (eval-print-last-sexp)))
     (load bootstrap-file nil 'nomessage))
 
-  (setq package-user-dir (expand-file-name "straight" user-emacs-directory)
-        straight-use-package-by-default t)
+  (setq package-user-dir (expand-file-name "straight" user-emacs-directory))
 
   (unless (file-directory-p package-user-dir)
     (make-directory package-user-dir t)))
@@ -967,6 +966,7 @@ file.
   (setq use-package-verbose t
         use-package-always-defer t
         use-package-hook-name-suffix nil
+        straight-use-package-by-default t
         byte-compile-warnings '(not free-vars unresolved noruntime lexical make-local)))
 
 ;; general requires this bit otherwise everything blows up when native
@@ -996,6 +996,7 @@ the packages might set.
 #+begin_src emacs-lisp :tangle yes
 (use-package no-littering
   :demand t
+  :commands (no-littering-expand-var-file-name no-littering-expand-etc-file-name)
   :config
   (require 'no-littering)
   (setq custom-file (no-littering-expand-var-file-name "custom.el")))
