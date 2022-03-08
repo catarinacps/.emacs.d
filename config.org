@@ -1108,7 +1108,6 @@ And we'll use =delight= to hide minor-modes names and such.
   (auto-fill-function " af")
   (eldoc-mode " ed")
   (editorconfig-mode)
-  (flymake-mode " fm" flymake)
   (visual-line-mode " vl")
   (abbrev-mode))
 #+end_src
@@ -1734,6 +1733,8 @@ Built-in error checking and linting package.
 (use-package flymake
   :straight (:type built-in)
   :commands (flymake-mode flymake-goto-next-error flymake-goto-prev-error)
+  :delight
+  (flymake-mode " fm" flymake)
   :general
   (:keymaps 'flymake-mode-map
    "M-n" #'flymake-goto-next-error
