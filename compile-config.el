@@ -1,5 +1,11 @@
 ;;; compile-config.el --- My configuration compile script-ish thingy -*- lexical-binding: t -*-
 
+;; change the default eln-cache directory
+(when (fboundp 'startup-redirect-eln-cache)
+  (startup-redirect-eln-cache
+   (convert-standard-filename
+    (expand-file-name  "var/eln-cache/" user-emacs-directory))))
+
 (setq load-path
       (delete (car (file-expand-wildcards "/usr/share/emacs/*/lisp/org")) load-path))
 
