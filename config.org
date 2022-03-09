@@ -165,6 +165,7 @@ Cool Emacs configs from cool people:
   - [[Git-related files][Git-related files]]
   - [[Go Language][Go Language]]
   - [[Terraform][Terraform]]
+  - [[Vimscript][Vimscript]]
 - [[Local variables][Local variables]]
 
 * Introduction
@@ -350,6 +351,7 @@ gawk '/\(use-package |:straight/ { print $2, $3 }' config.el |
 - use-package
 - vertico
 - vimish-fold
+- vimrc-mode
 - visual-fill-column
 - websocket
 - which-key
@@ -4715,6 +4717,15 @@ And its weird HCL markup language
 (use-package terraform-mode
   :after hcl-mode
   :mode "\\.tf\\(vars\\)?\\'")
+#+end_src
+
+** Vimscript
+
+Yeah I have no comments for this one
+
+#+begin_src emacs-lisp :tangle yes
+(use-package vimrc-mode
+  :mode "\\.vim\\(rc\\)?\\'")
 #+end_src
 
 * Local variables
