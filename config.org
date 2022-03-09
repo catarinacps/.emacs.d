@@ -166,6 +166,7 @@ Cool Emacs configs from cool people:
   - [[Go Language][Go Language]]
   - [[Terraform][Terraform]]
   - [[Vimscript][Vimscript]]
+  - [[Lua][Lua]]
 - [[Local variables][Local variables]]
 
 * Introduction
@@ -284,6 +285,7 @@ gawk '/\(use-package |:straight/ { print $2, $3 }' config.el |
 - lisp-mode
 - lispy
 - lispyville
+- lua-mode
 - magit
 - make-mode
 - marginalia
@@ -4726,6 +4728,16 @@ Yeah I have no comments for this one
 #+begin_src emacs-lisp :tangle yes
 (use-package vimrc-mode
   :mode "\\.vim\\(rc\\)?\\'")
+#+end_src
+
+** Lua
+
+Brazilian export!
+
+#+begin_src emacs-lisp :tangle yes
+(use-package lua-mode
+  :mode "\\.lua\\'"
+  :interpreter "lua")
 #+end_src
 
 * Local variables
