@@ -1742,7 +1742,7 @@ Also lets add =posframe= support to it
 Do things considering case in names
 
 #+begin_src emacs-lisp :tangle yes
-(use-package
+(use-package subword
   :straight (:type built-in)
   :commands (subword-mode global-subword-mode))
 #+end_src
