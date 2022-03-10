@@ -2081,7 +2081,7 @@ that eventually changes in the future, 'cause I like Corfu more than I like
   :custom
   (corfu-auto nil)
   (corfu-cycle t)
-  (corfu-quit-at-boundary t)
+  (corfu-quit-at-boundary nil)
   (corfu-quit-no-match t)
   (corfu-max-width 60)
   (corfu-scroll-margin 5)
