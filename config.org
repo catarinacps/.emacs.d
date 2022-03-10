@@ -149,7 +149,7 @@ Cool Emacs configs from cool people:
   - [[Julia][Julia]]
   - [[LaTeX][LaTeX]]
   - [[Meson][Meson]]
-  - [[{bspwm,sxhkd}rc][{bspwm,sxhkd}rc]]
+  - [[sxhkdrc][sxhkdrc]]
   - [[Configuration files][Configuration files]]
   - [[Rust][Rust]]
   - [[Perl][Perl]]
@@ -210,7 +210,6 @@ gawk '/\(use-package |:straight/ { print $2, $3 }' config.el |
 - bash-completion
 - beacon
 - bison
-- bspwm
 - cape
 - cargo
 - cc-mode
@@ -339,6 +338,7 @@ gawk '/\(use-package |:straight/ { print $2, $3 }' config.el |
 - smerge-mode
 - ssh
 - super-save
+- sxhkd-mode
 - terraform-mode
 - tex
 - toc-org
@@ -4350,21 +4350,21 @@ Python).
   :mode "^meson\\.build\\'")
 #+end_src
 
-** {bspwm,sxhkd}rc
+** sxhkdrc
 
-Derives from =conf-mode[space]=. Got it from [[https://notabug.org/arkhan/emacs-bspwm][here]].
+Mode recently made by a cool person online. Replaces the old and strange
+configuration I had before.
 
 #+begin_src emacs-lisp :tangle yes
-(use-package bspwm
-  :straight (:type built-in)
-  :commands (bspwm-config-mode)
-  :load-path (lambda () (expand-file-name "bspwm-mode" vendor-user-dir))
-  :mode
-  (("sxhkdrc\\'" . bspwm-config-mode)
-   ("bspwmrc\\'" . bspwm-config-mode))
-  ;; :hook
-  ;; (bspwm-config-mode-hook . page-break-lines-mode)
-  )
+(use-package sxhkd-mode
+  :straight
+  (sxhkd-mode
+   :type git
+   :host github
+   :repo "xFA25E/sxhkd-mode")
+  :mode "sxhkdrc\\'"
+  :hook
+  (sxhkd-mode-hook . (lambda () (run-hooks 'conf-mode-hook))))
 #+end_src
 
 ** Configuration files
