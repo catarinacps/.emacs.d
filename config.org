@@ -337,6 +337,7 @@ gawk '/\(use-package |:straight/ { print $2, $3 }' config.el |
 - smartparens
 - smerge-mode
 - ssh
+- subword
 - super-save
 - sxhkd-mode
 - terraform-mode
@@ -1971,8 +1972,7 @@ very pretty on =gruvbox=).
 
 #+begin_src emacs-lisp :tangle yes
 (use-package smart-mode-line
-  ;; :demand t
-  :disabled
+  :demand t
   :custom
   (sml/size-indication-format " %I ")
   (sml/line-number-format "%4l")
