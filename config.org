@@ -1570,6 +1570,7 @@ Like the previous one but for indentation.
   :straight (:type built-in)
   :custom
   (xref-search-program 'ripgrep)
+  (xref-show-xrefs-function #'consult-xref)
   :general
   (:keymaps 'hcps/leader-map
    "m d" #'xref-find-definitions
@@ -2125,6 +2126,7 @@ Think of it as =counsel= but without needing =ivy= to work.
 
 #+begin_src emacs-lisp :tangle yes
 (use-package consult
+  :commands consult-xref
   :preface
   (defun hcps/evil-scroll-to-top (&rest _)
     "Almost like a hook, kinda"
