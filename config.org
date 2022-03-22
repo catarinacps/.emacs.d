@@ -1282,11 +1282,7 @@ Let's monitor ourselves with =whitespace=.
   :custom
   (whitespace-line-column nil)
   (whitespace-style
-   '(face ;;
-     tabs indentation trailing lines-tail missing-newline-at-eof
-     space-after-tab space-before-tab))
-  :custom-face
-  (whitespace-missing-newline-at-eof ((t (:foreground unspecified :background unspecified)))))
+   '(face tabs indentation trailing lines-tail space-after-tab space-before-tab)))
 #+end_src
 
 *** =compile=
