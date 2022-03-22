@@ -4179,7 +4179,22 @@ Emacs version!
 
 ** Python
 
-A simple yet effective Python configuration.
+Start by adding =pyenv.el= to deal with virtual environments
+
+#+begin_src emacs-lisp :tangle yes
+(use-package pyenv
+  :commands (pyenv-activate pyenv-workon))
+#+end_src
+
+and =auto-virtualenv=
+
+#+begin_src emacs-lisp :tangle yes
+(use-package auto-virtualenv
+  :after pyenv
+  :commands auto-virtualenv-set-virtualenv)
+#+end_src
+
+Finally, a simple yet effective Python configuration.
 
 #+begin_src emacs-lisp :tangle yes
 (use-package python
@@ -4187,7 +4202,8 @@ A simple yet effective Python configuration.
   :commands python-mode
   :hook
   ((python-mode-hook . tree-sitter-mode)
-   (python-mode-hook . eglot-ensure))
+   (python-mode-hook . eglot-ensure)
+   (python-mode-hook . auto-virtualenv-set-virtualenv))
   :custom
   (python-flymake-command '("flake8" "-")))
 #+end_src
