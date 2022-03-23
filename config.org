@@ -746,6 +746,7 @@ Silly names for easier path usage.
   (defconst lisp-dir (expand-file-name "lisp" root-dir) "The extra emacs-lisp directory.")
   (defconst var-user-dir (expand-file-name "var" root-dir) "The temporaries directory.")
   (defconst vendor-user-dir (expand-file-name "vendor" lisp-dir) "The externally .el directory.")
+  (defconst documents-user-dir (expand-file-name "Documents" home-dir) "The (usually) default documents directory.")
   (defconst proj-user-dir (expand-file-name "Repositories" home-dir) "Default projects directory.")
   (defconst onedrive-user-dir (expand-file-name "OneDrive" home-dir) "Default OneDrive path."))
 #+end_src
@@ -928,7 +929,8 @@ Finally, let's load our custom variables
 #+begin_src emacs-lisp :tangle yes
 (setq custom-file (expand-file-name "custom.el" var-user-dir))
 
-(load-file custom-file)
+(when (file-exists-p custom-file)
+  (load-file custom-file))
 #+end_src
 
 * Package configuration
@@ -3149,7 +3151,9 @@ anyone should try Emacs.
   (org-support-shift-select nil)
   (org-link-descriptive t)
   (org-log-done 'note)
-  (org-directory (expand-file-name "Org" onedrive-user-dir))
+  (org-directory (if (file-directory-p onedrive-user-dir)
+                     (expand-file-name "Org" onedrive-user-dir)
+                   documents-user-dir))
   (org-cycle-emulate-tab t)
   (org-use-property-inheritance nil)
   (org-startup-indented t)
