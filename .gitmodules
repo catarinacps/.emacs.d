@@ -1,0 +1,3 @@
+[submodule "lisp/vendor/gcmh"]
+	path = lisp/vendor/gcmh
+	url = git@github.com:emacsmirror/gcmh.git

@@ -1,6 +1,6 @@
 ;;; early-init.el --- The init before init -*- lexical-binding: t -*-
 ;;
-;; Copyright © 2011-2018 Bozhidar Batsov
+;; Copyright (c) 2022 Henrique Silva
 ;;
 ;; Author: Henrique Silva <hcpsilva@inf.ufrgs.br>
 ;; Keywords: startup
@@ -15,8 +15,7 @@
    (convert-standard-filename
     (expand-file-name  "var/eln-cache/" user-emacs-directory))))
 
-(setq gc-cons-threshold (* 1024 1024 16) ; big gc threshold so we fast(er)
-      load-prefer-newer t
+(setq load-prefer-newer t
       inhibit-x-resources t
       comp-deferred-compilation t ; automatically native compile stuff
       package-enable-at-startup nil ; don't auto-initialize!

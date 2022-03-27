@@ -47,6 +47,7 @@ Cool Emacs configs from cool people:
 - [[Package configuration][Package configuration]]
   - [[Setting-up][Setting-up]]
   - [[Support][Support]]
+    - [[=gcmh=][=gcmh=]]
     - [[=no-littering=][=no-littering=]]
     - [[=use-package=][=use-package=]]
     - [[=general=][=general=]]
@@ -254,6 +255,7 @@ gawk '/\(use-package |:straight/ { print $2, $3 }' config.el |
 - files
 - flymake
 - flymake-diagnostic-at-point
+- gcmh
 - gdb-mi
 - general
 - ggo-mode
@@ -994,6 +996,20 @@ also lets add a ~(require 'cl-lib)~ for good measure
 
 All these packages just help on the configuration of the rest of the other
 packages.
+
+*** =gcmh=
+
+Automatic hacks to the garbage collector settings
+
+#+begin_src emacs-lisp :tangle yes
+(use-package gcmh
+  :demand t
+  :straight (:type built-in)
+  :load-path (lambda () (expand-file-name "gcmh" vendor-user-dir))
+  :delight
+  :config
+  (gcmh-mode 1))
+#+end_src
 
 *** =no-littering=
 
