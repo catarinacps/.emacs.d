@@ -219,6 +219,7 @@ gawk '/\(use-package |:straight/ { print $2, $3 }' config.el |
 - clang-format
 - clj-refactor
 - clojure-mode
+- clojure-mode-extra-font-locking
 - cmake-font-lock
 - cmake-mode
 - comint
@@ -278,6 +279,7 @@ gawk '/\(use-package |:straight/ { print $2, $3 }' config.el |
 - htmlize
 - hydra
 - ibuffer
+- inf-clojure
 - js
 - julia-mode
 - jupyter
@@ -4560,11 +4562,21 @@ Fucking finally
     (context 2)))
 #+end_src
 
+also add extra font-locking to the mode
+
+#+begin_src emacs-lisp :tangle yes
+(use-package clojure-mode-extra-font-locking
+  :demand t
+  :after clojure-mode)
+#+end_src
+
 also configure CIDER
 
 #+begin_src emacs-lisp :tangle yes
 (use-package cider
   :after clojure-mode
+  :custom
+  (cider-allow-jack-in-without-project t)
   :general
   (:keymaps 'clojure-mode-map
    :prefix hcps/leader-key
@@ -4580,6 +4592,21 @@ and =clj-refactor=
   :hook
   ((clj-refactor-mode-hook . yas-minor-mode)
    (clojure-mode-hook . clj-refactor-mode)))
+#+end_src
+
+and =inf-clojure= (inferior repl buffer for Clojure)
+
+#+begin_src emacs-lisp :tangle yes
+(use-package inf-clojure
+  :disabled
+  :after clojure-mode
+  :general
+  (:keymaps 'clojure-mode-map
+   :prefix hcps/leader-key
+   :non-normal-prefix hcps/alt-leader-key
+   "m R" #'inf-clojure)
+  :config
+  (setf (alist-get 'joker inf-clojure-startup-forms) "joker --no-readline"))
 #+end_src
 
 ** Racket
