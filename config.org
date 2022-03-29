@@ -808,10 +808,10 @@ Here's everything related to the mode-line.
 
 (add-to-list 'mode-line-misc-info '("@" system-name) t)
 
-(display-time-mode +1)
-(line-number-mode +1)
-(column-number-mode +1)
-(size-indication-mode +1)
+(display-time-mode 1)
+(line-number-mode 1)
+(column-number-mode 1)
+(size-indication-mode 1)
 #+end_src
 
 *** Line numbering and scrolling
@@ -860,7 +860,13 @@ Small fix for =scroll-margin=
 Highlighting the current line is also very useful.
 
 #+begin_src emacs-lisp :tangle yes
-(global-hl-line-mode +1)
+(global-hl-line-mode 1)
+#+end_src
+
+and let's enable =pixel-scroll-precision-mode=
+
+#+begin_src emacs-lisp :tangle yes
+(pixel-scroll-precision-mode 1)
 #+end_src
 
 *** Randoms
@@ -917,7 +923,7 @@ Random configs and definitions that don't have a clear category.
 ;; (require 'eshell)
 ;; (setq eshell-directory-name (expand-file-name "eshell" var-user-dir))
 
-;; (global-diff-hl-mode +1)
+;; (global-diff-hl-mode 1)
 ;; (add-hook 'dired-mode-hook 'diff-hl-dired-mode)
 
 ;; ;; use hippie-expand instead of dabbrev
@@ -1425,7 +1431,7 @@ Keep a list of recent files with =recentf=
     (expand-file-name "savefile" root-dir)))
   (recentf-auto-cleanup 'never)
   :config
-  (recentf-mode +1))
+  (recentf-mode 1))
 #+end_src
 
 *** =ibuffer=
@@ -1559,7 +1565,7 @@ pair close insert.
   :demand t
   :straight (:type built-in)
   :config
-  (electric-pair-mode +1))
+  (electric-pair-mode 1))
 #+end_src
 
 *** =electric=
@@ -1573,8 +1579,8 @@ Like the previous one but for indentation.
   :custom
   (electric-indent-chars '(?\n ?}))
   :config
-  (electric-indent-mode +1)
-  (electric-layout-mode +1))
+  (electric-indent-mode 1)
+  (electric-layout-mode 1))
 #+end_src
 
 *** =xref=
@@ -1656,7 +1662,7 @@ For dealing with merges in VCSs
   :init
   (with-eval-after-load 'hydra
     (defhydra hydra-smerge (:color pink
-                            :pre (smerge-mode +1))
+                            :pre (smerge-mode 1))
       "
 ^Movement^       ^Merge Action^          ^Other
 ^^^^^^------------------------------------------------
@@ -1848,7 +1854,7 @@ best of both worlds!
    ">" #'hcps/shift-right-region
    "<" #'hcps/shift-left-region)
   :config
-  (evil-mode +1))
+  (evil-mode 1))
 #+end_src
 
 **** States
@@ -1889,7 +1895,7 @@ automatically,
   :custom
   (evilmi-may-jump-by-percentage nil)
   :config
-  (global-evil-matchit-mode +1))
+  (global-evil-matchit-mode 1))
 #+end_src
 
 and =evil-mc= implements the =multiple-cursors= functionality to
@@ -1909,7 +1915,7 @@ and =evil-mc= implements the =multiple-cursors= functionality to
   (:keymaps 'hcps/leader-map
    [escape] #'evil-mc-undo-all-cursors)
   :config
-  (global-evil-mc-mode +1)
+  (global-evil-mc-mode 1)
   (fmakunbound 'evil-mc-make-and-goto-prev-cursor))
 #+end_src
 
@@ -1946,7 +1952,7 @@ expressing actions.
   :config
   (add-to-list 'evil-surround-pairs-alist '(?/ . ("/" . "/")))
   (add-to-list 'evil-surround-pairs-alist '(?* . ("*" . "*")))
-  (global-evil-surround-mode +1))
+  (global-evil-surround-mode 1))
 #+end_src
 
 **** Utilities
@@ -2030,7 +2036,7 @@ very pretty on =gruvbox=).
   (orderless-match-face-2 ((t (:weight bold :foreground "#87afaf"))))
   (orderless-match-face-3 ((t (:weight bold :foreground "#d787af"))))
   :config
-  (savehist-mode +1))
+  (savehist-mode 1))
 #+end_src
 
 *** =cape=
@@ -2068,7 +2074,7 @@ many senses.
    "C-u" #'vertico-scroll-down
    "C-d" #'vertico-scroll-up)
   :config
-  (vertico-mode +1))
+  (vertico-mode 1))
 #+end_src
 
 *** =corfu=
@@ -2110,7 +2116,7 @@ that eventually changes in the future, 'cause I like Corfu more than I like
    "SPC" #'corfu-insert-separator
    [remap newline] #'corfu-insert)
   :config
-  (corfu-global-mode +1))
+  (corfu-global-mode 1))
 #+end_src
 
 Let's also add =corfu-doc= to display documentation in a meaningful way
@@ -2191,7 +2197,7 @@ good to use Emacs built-in function in a prettier way.
   (:keymaps 'minibuffer-local-map
    "M-A" #'marginalia-cycle)
   :config
-  (marginalia-mode +1))
+  (marginalia-mode 1))
 #+end_src
 
 *** =undo-tree=
@@ -2300,10 +2306,9 @@ overall more popular than the former.
   ("M-0" #'treemacs-select-window
    "M-t" #'treemacs)
   :config
-  (treemacs-follow-mode +1)
-  (treemacs-filewatch-mode +1)
-  (treemacs-fringe-indicator-mode -1)
-  (require 'treemacs-evil))
+  (treemacs-follow-mode 1)
+  (treemacs-filewatch-mode 1)
+  (treemacs-fringe-indicator-mode -1))
 #+end_src
 
 *** =exec-path-from-shell=
@@ -2423,7 +2428,7 @@ you're typing in the mode-line.
   :custom
   (which-key-allow-evil-operators t)
   :config
-  (which-key-mode +1))
+  (which-key-mode 1))
 #+end_src
 
 *** =eglot=                                                             :WIP:
@@ -2551,7 +2556,7 @@ loses focus, etc.
   (super-save-idle-duration 60)
   :config
   (add-to-list 'super-save-triggers #'ace-window)
-  (super-save-mode +1))
+  (super-save-mode 1))
 #+end_src
 
 *** =yasnippet=
@@ -2727,7 +2732,7 @@ When in need of smart pairing, look no further than =smartparens=!
   :config
   (require 'smartparens-config)
   (sp-use-paredit-bindings)
-  (show-smartparens-global-mode +1))
+  (show-smartparens-global-mode 1))
 #+end_src
 
 *** =rainbow-delimiters=
@@ -2749,7 +2754,7 @@ This little add-on will highlight big cursor movements.
   (hcps/hook-require-once pre-command-hook beacon)
   :delight
   :config
-  (beacon-mode +1))
+  (beacon-mode 1))
 #+end_src
 
 *** =aggressive-indent=
@@ -2840,7 +2845,7 @@ media files.
      ("\\.mp4$" "mpv" (file))))
   (openwith-confirm-invocation nil)
   :config
-  (openwith-mode +1))
+  (openwith-mode 1))
 #+end_src
 
 *** =page-break-lines=
@@ -2934,7 +2939,7 @@ Obscure but nice way to enable ligature fonts.
      "<~" "~>" "~~>" "::" ":::" "==" "!=" "===" "!==" ":=" ":-"
      ":+" "<*" "<*>" "*>" "<|" "<|>" "|>" "+:" "-:" "=:"
      "<******>" "++" "+++"))
-  (global-ligature-mode +1))
+  (global-ligature-mode 1))
 #+end_src
 
 *** =mixed-pitch-mode=
