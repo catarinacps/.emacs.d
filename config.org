@@ -47,15 +47,15 @@ Cool Emacs configs from cool people:
 - [[Package configuration][Package configuration]]
   - [[Setting-up][Setting-up]]
   - [[Support][Support]]
+    - [[=delight=][=delight=]]
     - [[=gcmh=][=gcmh=]]
     - [[=no-littering=][=no-littering=]]
-    - [[=use-package=][=use-package=]]
     - [[=general=][=general=]]
-    - [[=delight=][=delight=]]
     - [[=hide-mode-line=][=hide-mode-line=]]
     - [[=mode-local=][=mode-local=]]
     - [[=crux=][=crux=]]
     - [[=hydra=][=hydra=]]
+    - [[=use-package=][=use-package=]]
   - [[Built-in][Built-in]]
     - [[=whitespace=][=whitespace=]]
     - [[=compile=][=compile=]]
@@ -1003,6 +1003,22 @@ also lets add a ~(require 'cl-lib)~ for good measure
 All these packages just help on the configuration of the rest of the other
 packages.
 
+*** =delight=
+
+And we'll use =delight= to hide minor-modes names and such.
+
+#+begin_src emacs-lisp :tangle yes
+(use-package delight
+  :demand t
+  :commands delight
+  :delight
+  (auto-fill-function " af")
+  (eldoc-mode " ed")
+  (editorconfig-mode)
+  (visual-line-mode " vl")
+  (abbrev-mode))
+#+end_src
+
 *** =gcmh=
 
 Automatic hacks to the garbage collector settings
@@ -1029,15 +1045,6 @@ the packages might set.
   :config
   (require 'no-littering)
   (setq custom-file (no-littering-expand-var-file-name "custom.el")))
-#+end_src
-
-*** =use-package=
-
-The one and only, for runtime use only!
-
-#+begin_src emacs-lisp :tangle yes
-(use-package use-package
-  :commands (use-package-core use-package))
 #+end_src
 
 *** =general=
@@ -1119,22 +1126,6 @@ file.
     "l" '(:ignore t :wk "mail")
     "m e" '(:ignore t :wk "eglot")
     "v n" '(:ignore t :wk "narrow")))
-#+end_src
-
-*** =delight=
-
-And we'll use =delight= to hide minor-modes names and such.
-
-#+begin_src emacs-lisp :tangle yes
-(use-package delight
-  :demand t
-  :commands delight
-  :delight
-  (auto-fill-function " af")
-  (eldoc-mode " ed")
-  (editorconfig-mode)
-  (visual-line-mode " vl")
-  (abbrev-mode))
 #+end_src
 
 *** =hide-mode-line=
@@ -1269,6 +1260,15 @@ _v_ verify setup    _f_ check           _s_ select
   (with-eval-after-load 'general
     (general-def '(global-map special-mode-map)
       "C-c f" 'hydra-flycheck/body)))
+#+end_src
+
+*** =use-package=
+
+The one and only, for runtime use only!
+
+#+begin_src emacs-lisp :tangle yes
+(use-package use-package
+  :commands (use-package-core use-package))
 #+end_src
 
 ** Built-in
