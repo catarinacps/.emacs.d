@@ -783,7 +783,7 @@ any further.
               default-justification 'left
               indent-tabs-mode nil
               tab-always-indent 'complete
-              tab-first-completion 'word
+              tab-first-completion nil
               bidi-paragraph-direction 'left-to-right
               sentence-end-double-space nil
               tab-width 4
