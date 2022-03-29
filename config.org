@@ -2,9 +2,9 @@
 #+author: Henrique Silva
 #+email: hcpsilva@inf.ufrgs.br
 
-These configurations represent my preferred version of Emacs, one that uses =evil=
-everywhere it can and one that tries to be as minimalist as +I want+ possible.
-Beware that this configuration uses a cutting-edge version of Emacs, so YMMV.
+These configurations represent my preferred version of Emacs, one that tries to
+be as minimalist as +I want+ possible. Beware that this configuration uses a
+cutting-edge version of Emacs, so YMMV.
 
 Cool Emacs configs from cool people:
 
@@ -207,6 +207,7 @@ gawk '/\(use-package |:straight/ { print $2, $3 }' config.el |
 - auctex
 - auctex-latexmk
 - autoinsert
+- auto-virtualenv
 - avy
 - bash-completion
 - beacon
@@ -327,6 +328,7 @@ gawk '/\(use-package |:straight/ { print $2, $3 }' config.el |
 - preproc-font-lock
 - prog-mode
 - project
+- pyenv
 - python
 - racket-mode
 - rainbow-delimiters
@@ -346,10 +348,9 @@ gawk '/\(use-package |:straight/ { print $2, $3 }' config.el |
 - tex
 - toc-org
 - tramp
+- treemacs
 - tree-sitter
 - tree-sitter-langs
-- treemacs
-- treemacs-evil
 - typescript-mode
 - undo-tree
 - uniquify
@@ -1056,29 +1057,22 @@ file.
 #+begin_src emacs-lisp :tangle yes
 (use-package general
   :demand t
-  :commands general-define-key
+  :commands (general-define-key general-def)
   :preface
-  (defconst hcps/leader-key "SPC"
-    "Leader key for some special commands.")
+  (defconst hcps/leader-key "C-c"
+    "Leader key for some personal commands.")
   (defconst hcps/alt-leader-key "C-:"
     "Alternate leader key.")
   (defvar hcps/leader-map (make-sparse-keymap)
     "Keymap for all my leader bindings.")
   :init
-  (general-unbind 'global-map
-    hcps/leader-key)
   (general-def
     :keymaps 'override
-    hcps/alt-leader-key '(:wk "leader" :keymap hcps/leader-map :package general))
-  (general-def
-    :keymaps 'special-mode-map
-    hcps/leader-key '(:wk "leader" :keymap hcps/leader-map :package general))
-  :config
-  ;; common emacs styled keybindings
-  (general-def 'override
+    hcps/alt-leader-key '(:keymap hcps/leader-map :package general)
+    hcps/leader-key '(:keymap hcps/leader-map :package general)
     "C-x C-b" #'ibuffer
     "C-x k" #'kill-this-buffer
-    "C-c x" #'hcps/date-iso
+    ;; "C-c x" #'hcps/date-iso
     "<f9>" #'hcps/get-selected-text
     "M--" #'text-scale-decrease
     "M-+" #'text-scale-increase
@@ -1090,6 +1084,7 @@ file.
     "M-K" #'hcps/move-line-up
     "M-J" #'hcps/move-line-down
     "<f12>" #'menu-bar-mode)
+  :config
   ;; leader-map keybindings
   (general-def 'hcps/leader-map
     "s" #'save-buffer
@@ -1108,12 +1103,9 @@ file.
     "v n p" #'narrow-to-page
     "v n f" #'narrow-to-defun
     "v n r" #'narrow-to-region
-    "v n w" #'widen)
-  ;; cute names for the prefixes (some will only be defined further
-  ;; along)
-  (general-def '(normal visual insert emacs special-mode-map)
-    :prefix hcps/leader-key
-    :non-normal-prefix hcps/alt-leader-key
+    ;; cute names for the prefixes (some will only be defined further
+    ;; along)
+    "v n w" #'widen
     "g" '(:ignore t :wk "magit")
     "f" '(:ignore t :wk "file")
     "w" '(:ignore t :wk "window")
@@ -1441,17 +1433,13 @@ Way better than the default one (and is built-in!)
 #+begin_src emacs-lisp :tangle yes
 (use-package ibuffer
   :straight (:type built-in)
-  :hook
-  ((ibuffer-mode-hook . hcps/hide-evil-tag)
-   (ibuffer-mode-hook . evil-emacs-state))
   :general
   (:keymaps 'ibuffer-mode-map
    "q" 'kill-this-buffer
    "j" 'ibuffer-forward-line
    "k" 'ibuffer-backward-line
    "K" 'ibuffer-do-kill-lines
-   "J" 'ibuffer-jump-to-buffer
-   hcps/leader-key '(:wk "leader" :keymap hcps/leader-map :package general))
+   "J" 'ibuffer-jump-to-buffer)
   (:keymaps 'hcps/leader-map
    "B" 'ibuffer)
   (:keymaps 'override
@@ -1536,7 +1524,7 @@ If this works, I'll be very much pleasantly surprised.
           (set-process-window-size process (window-height) 72)))))
   :hook
   ((comint-exec-hook . comint-fix-window-size)
-   (comint-mode-hook . evil-emacs-state)))
+   (comint-mode-hook . rainbow-delimiters-mode)))
 #+end_src
 
 *** =paren=
@@ -1593,9 +1581,10 @@ Like the previous one but for indentation.
   (xref-show-xrefs-function #'consult-xref)
   :general
   (:keymaps 'hcps/leader-map
-   "m d" #'xref-find-definitions
-   "m r" #'xref-find-references
-   "m a" #'xref-find-apropos))
+   :prefix "m"
+   "d" #'xref-find-definitions
+   "r" #'xref-find-references
+   "a" #'xref-find-apropos))
 #+end_src
 
 *** =gdb=
@@ -1690,20 +1679,21 @@ _p_: prev hunk   _m_: keep mine          _r_: resolve
       ("q" nil :color blue)))
   :general
   (:keymaps 'hcps/leader-map
-   "f e" '(:ignore t :wk "smerge")
-   "f e h" #'hydra-smerge/body
-   "f e n" #'smerge-next
-   "f e p" #'smerge-prev
-   "f e r" #'smerge-resolve
-   "f e a" #'smerge-keep-all
-   "f e b" #'smerge-keep-base
-   "f e o" #'smerge-keep-lower           ; for the obsolete keep-other
-   "f e l" #'smerge-keep-lower
-   "f e m" #'smerge-keep-upper           ; for the obsolete keep-mine
-   "f e u" #'smerge-keep-upper
-   "f e E" #'smerge-ediff
-   "f e C" #'smerge-combine-with-next
-   "f e R" #'smerge-refine)
+   :prefix "f e"
+   nil '(:ignore t :wk "smerge")
+   "h" #'hydra-smerge/body
+   "n" #'smerge-next
+   "p" #'smerge-prev
+   "r" #'smerge-resolve
+   "a" #'smerge-keep-all
+   "b" #'smerge-keep-base
+   "o" #'smerge-keep-lower           ; for the obsolete keep-other
+   "l" #'smerge-keep-lower
+   "m" #'smerge-keep-upper           ; for the obsolete keep-mine
+   "u" #'smerge-keep-upper
+   "E" #'smerge-ediff
+   "C" #'smerge-combine-with-next
+   "R" #'smerge-refine)
   :config
   (require 'hydra))
 #+end_src
@@ -1787,7 +1777,7 @@ best of both worlds!
 
 #+begin_src emacs-lisp :tangle yes
 (use-package evil
-  :demand t
+  :disabled
   :commands (evil-set-initial-state evil-emacs-state)
   :defines (evil-normal-state-map evil-visual-state-map)
   :preface
@@ -1864,8 +1854,9 @@ Apparently the =evil-states= package isn't being loaded correctly after
 
 #+begin_src emacs-lisp :tangle yes
 (use-package evil-states
+  :disabled
   :after evil
-  :demand t
+  ;; :demand t
   :straight (:type built-in)
   :custom
   (evil-emacs-state-cursor    '("red" box))
@@ -1890,8 +1881,9 @@ automatically,
 
 #+begin_src emacs-lisp :tangle yes
 (use-package evil-matchit
+  :disabled
   :after evil
-  :demand t
+  ;; :demand t
   :custom
   (evilmi-may-jump-by-percentage nil)
   :config
@@ -1903,8 +1895,9 @@ and =evil-mc= implements the =multiple-cursors= functionality to
 
 #+begin_src emacs-lisp :tangle yes
 (use-package evil-mc
+  :disabled
   :after evil
-  :demand t
+  ;; :demand t
   :delight
   :general
   (:states 'visual
@@ -1926,8 +1919,9 @@ bindings to =smartparens=,
 
 #+begin_src emacs-lisp :tangle no
 (use-package evil-smartparens
+  :disabled
   :after evil
-  :demand t
+  ;; :demand t
   :delight
   :hook
   (smartparens-enabled-hook . evil-smartparens-mode))
@@ -1940,8 +1934,9 @@ expressing actions.
 
 #+begin_src emacs-lisp :tangle yes
 (use-package evil-surround
+  :disabled
   :after evil
-  :demand t
+  ;; :demand t
   :general
   (:states 'operator
    "s" #'evil-surround-edit
@@ -1963,8 +1958,9 @@ popular packages,
 
 #+begin_src emacs-lisp :tangle yes
 (use-package evil-collection
+  :disabled
   :after evil
-  :demand t
+  ;; :demand t
   :delight evil-collection-unimpaired-mode
   :config
   (setq evil-collection-mode-list
@@ -1978,8 +1974,9 @@ decrease numbers.
 
 #+begin_src emacs-lisp :tangle yes
 (use-package evil-numbers
+  :disabled
   :after evil
-  :demand t
+  ;; :demand t
   :general
   (:states 'normal
    "C-a" #'evil-numbers/inc-at-pt
@@ -2274,7 +2271,6 @@ cool extension that provides such functionality.
    "r" #'dashboard-jump-to-recent-files)
   :config
   (setq-mode-local dashboard-mode scroll-margin 0)
-  (evil-set-initial-state #'dashboard-mode 'emacs)
   (dashboard-setup-startup-hook))
 #+end_src
 
@@ -2286,13 +2282,11 @@ overall more popular than the former.
 
 #+begin_src emacs-lisp :tangle yes
 (use-package treemacs
-  :straight t
-  :straight treemacs-evil
+  :commands treemacs-mode
   :init
   (advice-add #'treemacs-mode :around #'disable-scroll-margin)
   :hook
-  ((treemacs-mode-hook . hide-mode-line-mode)
-   (cfrs-input-mode-hook . evil-emacs-state))
+  (treemacs-mode-hook . hide-mode-line-mode)
   :custom
   (treemacs-persist-file (expand-file-name "treemacs/persist.org" var-user-dir))
   (treemacs-display-in-side-window t)
@@ -2375,13 +2369,10 @@ of it. So, I use =deadgrep=!
 
 #+begin_src emacs-lisp :tangle yes
 (use-package deadgrep
-  :after evil-collection
   :general
   (:keymaps 'hcps/leader-map
    :prefix "f"
-   "g" #'deadgrep)
-  :config
-  (evil-collection-deadgrep-setup))
+   "g" #'deadgrep))
 #+end_src
 
 *** =link-hint=
@@ -2403,16 +2394,13 @@ As I love some overkill, here's =avy=.
 
 #+begin_src emacs-lisp :tangle yes
 (use-package avy
-  :after evil
   :custom
   (avy-styles-alist
    '((avy-goto-char-2 . post)
      (avy-goto-line   . at-full)))
   (avy-background t)
   :general
-  (:states 'normal
-   "s" #'avy-goto-char-2
-   "S" #'avy-goto-line))
+  ("M-g f" #'avy-goto-line))
 #+end_src
 
 *** =which-key=
@@ -2617,12 +2605,9 @@ universe, nay, in the whole multiverse.
 #+begin_src emacs-lisp :tangle yes
 (use-package magit
   :hook
-  ((after-save-hook               . magit-after-save-refresh-status)
-   (magit-pre-display-buffer-hook . evil-emacs-state)
-   (magit-mode-hook               . hcps/hide-evil-tag)
-   (git-commit-mode-hook          . evil-emacs-state)
-   (magit-file-mode-hook          . diff-hl-mode)
-   (magit-post-refresh-hook       . diff-hl-magit-post-refresh))
+  ((after-save-hook         . magit-after-save-refresh-status)
+   (magit-file-mode-hook    . diff-hl-mode)
+   (magit-post-refresh-hook . diff-hl-magit-post-refresh))
   :preface
   ;; easy on-off for the following function
   (defcustom magit-push-protected-branch nil
@@ -2685,8 +2670,6 @@ Also, =git-timemachine= is a beautiful way to walk through git history:
 (use-package git-timemachine
   :after magit
   :demand t
-  :hook
-  (git-timemachine-mode-hook . evil-normalize-keymaps)
   :general
   (:states '(normal visual)
    :keymaps 'git-timemachine-mode-map
@@ -2699,7 +2682,7 @@ Also, =git-timemachine= is a beautiful way to walk through git history:
   (:keymaps 'hcps/leader-map
    "g t" #'git-timemachine)
   :config
-  (evil-make-overriding-map git-timemachine-mode-map 'normal))
+  (require 'magit))
 #+end_src
 
 *** =expand-region=
@@ -2810,12 +2793,12 @@ windows.
 #+begin_src emacs-lisp :tangle yes
 (use-package helpful
   :general
-  (:keymaps '(global-map special-mode-map override)
+  (:keymaps 'override
    :prefix "C-h"
    "F" #'helpful-function
    "C" #'helpful-command
    "M" #'helpful-macro)
-  (:keymaps '(global-map special-mode-map override)
+  (:keymaps 'override
    [remap describe-key] #'helpful-key
    [remap describe-variable] #'helpful-variable
    [remap describe-function] #'helpful-callable))
@@ -2995,7 +2978,6 @@ the way (nor the frequency) I should be.
 
 #+begin_src emacs-lisp :tangle yes
 (use-package lispy
-  :disabled
   :commands (lispy-mode)
   :delight (lispy-mode " lp"))
 #+end_src
@@ -3004,6 +2986,7 @@ With it, also configure the Evil support layer, =lispyville=
 
 #+begin_src emacs-lisp :tangle yes
 (use-package lispyville
+  :disabled
   :delight (lispyville-mode " lv")
   :hook
   (eval-expression-minibuffer-setup-hook . lispyville-mode)
@@ -3025,7 +3008,7 @@ Finally, adding this amazing package
 #+begin_src emacs-lisp :tangle yes
 (use-package embark
   :general
-  (:keymaps '(override normal visual motion)
+  (:keymaps 'override
    "M-SPC" #'embark-act
    "M-S-SPC" #'embark-dwim))
 #+end_src
@@ -3049,13 +3032,6 @@ To provide live preview of =embark= actions.
 #+begin_src emacs-lisp :tangle yes
 (use-package notmuch
   :commands (notmuch-hello notmuch-show notmuch-tree notmuch-search)
-  :hook
-  ((notmuch-hello-mode-hook    . evil-emacs-state)
-   (notmuch-hello-refresh-hook . evil-emacs-state)
-   (notmuch-search-hook        . evil-emacs-state)
-   (notmuch-search-mode-hook   . evil-emacs-state)
-   (notmuch-tree-mode-hook     . evil-emacs-state)
-   (notmuch-message-mode-hook  . evil-insert-state))
   :custom
   (notmuch-search-oldest-first nil)
   (notmuch-saved-searches
@@ -3160,9 +3136,7 @@ anyone should try Emacs.
    (org-mode-hook . yas-minor-mode)
    (org-mode-hook . eldoc-mode)
    ;; (org-mode-hook . visual-line-mode)
-   (org-mode-hook . (lambda () (whitespace-toggle-options 'lines-tail)))
-   (org-log-buffer-setup-hook . evil-emacs-state)
-   (org-log-buffer-setup-hook . hcps/hide-evil-tag))
+   (org-mode-hook . (lambda () (whitespace-toggle-options 'lines-tail))))
   :custom
   (org-return-follows-link t)
   ;; the following used to be '(latex script entities)
@@ -3211,36 +3185,8 @@ anyone should try Emacs.
   (org-global-properties
    '(("EFFORT_ALL" . "0 1 2 3 4 5 6 7 8 9 10")))
   :general
-  (:states '(normal visual)
-   :keymaps 'org-mode-map
-   "t" #'org-todo              ; mark a TODO item as DONE
-   "$" #'org-end-of-line       ; smarter behaviour on headlines etc.
-   "L" #'org-end-of-line
-   "0" #'org-beginning-of-line ; ditto
-   "H" #'org-beginning-of-line
-   "-" #'org-ctrl-c-minus      ; change bullet style
-   "<" #'org-metaleft          ; outdent
-   ">" #'org-metaright         ; indent
-   "M-h" #'org-do-promote
-   "M-l" #'org-do-demote
-   "M-H" #'org-promote-subtree
-   "M-L" #'org-demote-subtree
-   "C-i" #'org-toggle-inline-images
-   "C-l" #'org-toggle-link-display
-   "C-j" #'outline-next-visible-heading
-   "C-k" #'outline-previous-visible-heading
-   "C-S-k" #'outline-up-heading
-   "<tab>" #'outline-toggle-children
-   "<backtab>" #'org-global-cycle
-   "<return>" #'org-open-at-point
-   "<S-left>" nil
-   "<S-right>" nil
-   "<S-up>" nil
-   "<S-down>" nil)
-  (:states '(normal visual)
-   :keymaps 'org-mode-map
+  (:keymaps 'org-mode-map
    :prefix hcps/leader-key
-   :non-normal-prefix hcps/alt-leader-key
    "v n s" #'org-narrow-to-subtree
    "v n b" #'org-narrow-to-block
    "m i d" #'org-insert-drawer
@@ -3253,13 +3199,19 @@ anyone should try Emacs.
    "m h" #'org-schedule
    "m o" #'org-priority
    "m p" #'org-set-property
-   "m s" #'org-match-sparse-tree)
-  (:states 'motion
-   :keymaps 'org-mode-map
-   "{" #'org-backward-paragraph
-   "}" #'org-forward-paragraph
-   "(" #'org-backward-sentence
-   ")" #'org-forward-sentence)
+   "m s" #'org-match-sparse-tree
+   "m t" #'org-todo              ; mark a TODO item as DONE
+   "m h" #'org-do-promote
+   "m l" #'org-do-demote
+   "m H" #'org-promote-subtree
+   "m L" #'org-demote-subtree
+   "m C-i" #'org-toggle-inline-images
+   "m C-l" #'org-toggle-link-display
+   "m C-j" #'outline-next-visible-heading
+   "m C-k" #'outline-previous-visible-heading
+   "m <tab>" #'outline-toggle-children)
+  (:keymaps 'org-mode-map
+   "C-S-k" #'outline-up-heading)
   (:keymaps 'hcps/leader-map
    "o b" #'org-switchb)
   :config
@@ -3318,8 +3270,7 @@ multiple export backends and such
   (org-ref-insert-ref-function 'org-ref-ivy-insert-ref-link)
   (org-ref-show-broken-links nil)
   :general
-  (:states '(normal visual)
-   :keymaps 'org-mode-map
+  (:keymaps 'org-mode-map
    :prefix hcps/leader-key
    :non-normal-prefix hcps/alt-leader-key
    "m c" #'org-ref-cite-hydra/body)
@@ -3396,9 +3347,7 @@ The ultimate journaling tool of the ultimate note-taking tool.
   (org-journal-time-format "")
   :general
   (:keymaps 'hcps/leader-map
-   "o j" #'org-journal-new-entry)
-  :config
-  (evil-initial-state 'org-journal-mode 'insert))
+   "o j" #'org-journal-new-entry))
 #+end_src
 
 **** =org-capture=
@@ -3412,8 +3361,6 @@ It is built-in and it is beautiful.
   :preface
   (defconst org-main-notes-file (expand-file-name "Org/organizer.org" onedrive-user-dir)
     "File that I use to store notes before reviewing them.")
-  :hook
-  (org-capture-mode-hook . evil-insert-state)
   :custom
   (org-default-notes-file org-main-notes-file)
   (org-capture-templates
@@ -3714,9 +3661,6 @@ Now, some configurations relating org-babel and its magic source blocks.
   (advice-add #'org-babel-examplify-region :around #'org-babel-region-strip-ansi-codes)
   (advice-add #'org-string-nw-p :around #'org-babel-strip-ansi-codes)
   (advice-add #'org-element-interpret-data :around #'org-babel-strip-ansi-codes)
-  ;; make tab-indent-natively work with evil
-  (advice-add #'org-babel-do-key-sequence-in-edit-buffer
-              :around #'dzop/evil-org-insert-state-in-edit-buffer)
   :custom
   (org-edit-src-content-indentation 0)
   (org-edit-src-persistent-message nil)
@@ -3905,8 +3849,7 @@ that can really be of great use while editing C and C++ code.
   :custom
   (clang-format-fallback-style "webkit")
   :general
-  (:states '(normal visual)
-   :keymaps 'c-mode-base-map
+  (:keymaps 'c-mode-base-map
    :prefix hcps/leader-key
    :non-normal-prefix hcps/alt-leader-key
    "m f" #'clang-format-region)
@@ -3960,18 +3903,15 @@ Statistics/. It provides you with everything you need from R.
   (ess-auto-width fill-column)
   (ess-style 'RStudio)
   :general
-  (:states 'insert
-   :keymaps 'ess-r-mode-map
+  (:keymaps 'ess-r-mode-map
    "M-RET" #'hcps/insert-r-pipe
    "<tab>" #'ess-indent-or-complete)
-  (:states '(normal visual)
-   :keymaps 'ess-r-mode-map
+  (:keymaps 'ess-r-mode-map
    :prefix hcps/leader-key
    :non-normal-prefix hcps/alt-leader-key
    "m c" #'ess-eval-region-or-function-or-paragraph-and-step
    "m r" #'ess-eval-region)
-  (:states 'normal
-   :keymaps 'ess-r-mode-map
+  (:keymaps 'ess-r-mode-map
    :prefix hcps/leader-key
    :non-normal-prefix hcps/alt-leader-key
    "m e" #'Rd-mode-insert-skeleton
@@ -4011,8 +3951,7 @@ As for shell-scripting:
    (sh-mode-hook . tree-sitter-mode)
    (sh-mode-hook . sh-electric-here-document-mode))
   :general
-  (:states '(normal visual)
-   :keymaps 'sh-mode-map
+  (:keymaps 'sh-mode-map
    :prefix hcps/leader-key
    :non-normal-prefix hcps/alt-leader-key
    "m s" #'sh-set-shell
@@ -4158,16 +4097,10 @@ Finally, the mode's final configuration
    ("\\.cl\\'"   . lisp-mode))
   :hook
   ((lisp-mode-hook . aggressive-indent-mode)
-   ;; (lisp-mode-hook . setup-hyphen-word-component)
+   (lisp-mode-hook . lispy-mode)
    (lisp-mode-hook . lisp-extra-font-lock-mode))
   :custom
   (lisp-indent-function #'fuco1/lisp-indent-function)
-  :general
-  (:states '(normal visual)
-   :keymaps 'lisp-mode-map
-   :prefix hcps/leader-key
-   :non-normal-prefix hcps/alt-leader-key
-   "m l" #'lispyville-mode)
   :config
   (setq-mode-local lisp-mode comment-start ";; "))
 #+end_src
@@ -4191,12 +4124,6 @@ Emacs version!
   :hook
   ((after-save-hook      . recompile-elc-on-save)
    (emacs-lisp-mode-hook . (lambda () (run-hooks 'lisp-mode-hook))))
-  :general
-  (:states '(normal visual)
-   :keymaps 'emacs-lisp-mode-map
-   :prefix hcps/leader-key
-   :non-normal-prefix hcps/alt-leader-key
-   "m l" #'lispyville-mode)
   :config
   (setq-mode-local emacs-lisp-mode comment-start ";; ")
   (require 'use-package))
@@ -4332,8 +4259,7 @@ Let's start with some basic =AUCTeX= configuration
      (output-pdf "xdg-open")
      (output-html "xdg-open")))
   :general
-  (:states '(normal visual)
-   :keymaps 'LaTeX-mode-map
+  (:keymaps 'LaTeX-mode-map
    :prefix hcps/leader-key
    :non-normal-prefix hcps/alt-leader-key
    "m e" #'LaTeX-environment
@@ -4353,8 +4279,7 @@ And =RefTeX= to follow it
   :custom
   (reftex-bibliography-commands '("bibliography" "nobibliography" "addbibresource"))
   :general
-  (:states '(normal visual)
-   :keymaps 'LaTeX-mode-map
+  (:keymaps 'LaTeX-mode-map
    :prefix hcps/leader-key
    :non-normal-prefix hcps/alt-leader-key
    "m b" #'reftex-label
@@ -4458,8 +4383,7 @@ Old language, still great for doing admin stuff in few lines.
   ;; (cperl-array-face ((t nil)))
   ;; (cperl-hash-face ((t nil)))
   :general
-  (:states '(normal visual)
-   :keymaps 'cperl-mode-map
+  (:keymaps 'cperl-mode-map
    :prefix hcps/leader-key
    :non-normal-prefix hcps/alt-leader-key
    "i" #'cperl-indent-region)
@@ -4518,8 +4442,7 @@ Diagrams are cool
   :custom
   (graphviz-dot-indent-width 4)
   :general
-  (:states '(normal visual)
-   :keymaps 'graphviz-dot-mode-map
+  (:keymaps 'graphviz-dot-mode-map
    :prefix hcps/leader-key
    :non-normal-prefix hcps/alt-leader-key
    "m f" #'graphviz-dot-indent-graph
@@ -4618,8 +4541,9 @@ Fucking finally
    ("\\.cljc\\'" . clojurec-mode)
    ("\\.cljs\\'" . clojurescript-mode))
   :hook
-  ((clojure-mode-hook . (lambda () (run-hooks 'lisp-mode-hook)))
-   (clojure-mode-hook . eglot-ensure))
+  ((clojure-mode-hook . aggressive-indent-mode)
+   (clojure-mode-hook . eglot-ensure)
+   (clojure-mode-hook . lispy-mode))
   :config
   (define-clojure-indent
     (defroutes 'defun)
@@ -4642,8 +4566,7 @@ also configure CIDER
 (use-package cider
   :after clojure-mode
   :general
-  (:states '(normal visual)
-   :keymaps 'clojure-mode-map
+  (:keymaps 'clojure-mode-map
    :prefix hcps/leader-key
    :non-normal-prefix hcps/alt-leader-key
    "m i" #'cider-jack-in))
@@ -4669,16 +4592,14 @@ Yes! I've came full circle and now I love Lisp/Scheme, what the heck.
   :hook
   ((racket-mode-hook . (lambda () (run-hooks 'lisp-mode-hook)))
    (racket-mode-hook . racket-xp-mode)
-   (racket-repl-mode-hook . (lambda () (run-hooks 'lisp-mode-hook)))
-   (racket-repl-mode-hook . evil-emacs-state))
+   (racket-repl-mode-hook . (lambda () (run-hooks 'lisp-mode-hook))))
   :custom
   (racket-memory-limit 4096)
   (racket-show-functions '(racket-show-echo-area))
   :custom-face
   (racket-selfeval-face ((t (:inherit font-lock-constant-face :foreground unspecified))))
   :general
-  (:states '(normal visual)
-   :keymaps 'racket-mode-map
+  (:keymaps 'racket-mode-map
    :prefix hcps/leader-key
    :non-normal-prefix hcps/alt-leader-key
    "m x" #'racket-run-and-switch-to-repl
