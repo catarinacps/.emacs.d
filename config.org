@@ -1031,7 +1031,7 @@ Automatic hacks to the garbage collector settings
   :demand t
   :straight (:type built-in)
   :load-path (lambda () (expand-file-name "gcmh" vendor-user-dir))
-  :delight
+  :delight (gcmh-mode)
   :config
   (gcmh-mode 1))
 #+end_src
