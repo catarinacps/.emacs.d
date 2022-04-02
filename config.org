@@ -79,6 +79,7 @@ Cool Emacs configs from cool people:
     - [[=sendmail=][=sendmail=]]
     - [[=flymake=][=flymake=]]
     - [[=subword=][=subword=]]
+    - [[=dired=][=dired=]]
   - [[Extensions][Extensions]]
     - [[=evil=][=evil=]]
     - [[=smart-mode-line=][=smart-mode-line=]]
@@ -235,6 +236,7 @@ gawk '/\(use-package |:straight/ { print $2, $3 }' config.el |
 - deadgrep
 - delight
 - diff-hl
+- dired
 - dockerfile-mode
 - eglot
 - elec-pair
@@ -1764,6 +1766,19 @@ Do things considering case in names
 (use-package subword
   :straight (:type built-in)
   :commands (subword-mode global-subword-mode))
+#+end_src
+
+*** =dired=
+
+Some basic configuration for the Emacs file manager
+
+#+begin_src emacs-lisp :tangle yes
+(use-package dired
+  :demand t
+  :straight (:type built-in)
+  :custom
+  (dired-dwim-target t)
+  (dired-recursive-copies 'always))
 #+end_src
 
 ** Extensions
