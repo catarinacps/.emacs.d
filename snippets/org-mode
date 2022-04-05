@@ -1,0 +1,18 @@
+;; -*- lisp -*-
+
+org-mode
+
+(el "#+begin_src emacs-lisp :tangle yes" n> r> n> "#+end_src"
+    :post (progn (tempel-done) (org-edit-src-code)))
+(sh "#+begin_src bash :results output :exports both" n> r> n> "#+end_src"
+    :post (progn (tempel-done) (org-edit-src-code)))
+(r "#+begin_src R :session :results output :exports both" n> r> n> "#+end_src"
+   :post (progn (tempel-done) (org-edit-src-code)))
+(rg "#+header: :unit cm :width 9 :height 6" n
+    "#+begin_src R :session :results output file graphics "
+    ":file " (org-babel-temp-file "figure" ".pdf") " "
+    ":exports both" n> r> n> "#+end_src"
+    :post (progn (tempel-done) (org-edit-src-code)))
+
+(n "#+name: " p)
+(t "#+title: " p)

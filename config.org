@@ -128,6 +128,7 @@ Cool Emacs configs from cool people:
     - [[=embark=][=embark=]]
     - [[=embark-consult=][=embark-consult=]]
     - [[=notmuch=][=notmuch=]]
+    - [[=tempel=][=tempel=]]
   - [[Theme][Theme]]
 - [[File modes][File modes]]
   - [[=prog-mode=][=prog-mode=]]
@@ -348,6 +349,7 @@ gawk '/\(use-package |:straight/ { print $2, $3 }' config.el |
 - subword
 - super-save
 - sxhkd-mode
+- tempel
 - terraform-mode
 - tex
 - toc-org
@@ -2601,6 +2603,7 @@ I use =yasnippet= to handle my snippet needs.
 
 #+begin_src emacs-lisp :tangle yes
 (use-package yasnippet
+  :disabled
   :delight
   (yas-minor-mode " ys")
   :commands (yas-minor-mode yas-expand-snippet yas-lookup-snippet)
@@ -3099,6 +3102,39 @@ To provide live preview of =embark= actions.
    "n" #'notmuch-poll))
 #+end_src
 
+*** =tempel=
+
+A tiny package that modernizes the =tempo= built-in template package!
+
+#+begin_src emacs-lisp :tangle yes
+(use-package tempel
+  :commands (tempel-expand tempel-complete tempel-insert)
+  :preface
+  (defconst hcps/tempel-snippets-dir (expand-file-name "snippets" user-emacs-directory))
+  (defun tempel-setup-capf ()
+    ;; Add the Tempel Capf to `completion-at-point-functions'. `tempel-expand'
+    ;; only triggers on exact matches. Alternatively use `tempel-complete' if
+    ;; you want to see all matches, but then Tempel will probably trigger too
+    ;; often when you don't expect it.
+    ;; NOTE: We add `tempel-expand' *before* the main programming mode Capf,
+    ;; such that it will be tried first.
+    (setq-local completion-at-point-functions
+                (cons #'tempel-expand
+                      completion-at-point-functions)))
+  :hook
+  (text-mode-hook . tempel-setup-capf)
+  :custom
+  (tempel-path (mapcar (lambda (f) (expand-file-name f hcps/tempel-snippets-dir))
+                       '("prog-mode" "lisp-mode" "text-mode" "org-mode")))
+  (tempel-trigger-prefix "<")
+  :general
+  (:keymaps 'tempel-map
+   "M-n" #'tempel-next
+   "M-p" #'tempel-previous
+   [remap keyboard-quit] #'tempel-abort))
+
+#+end_src
+
 ** Theme
 
 Here I define the theme that I use, which is =gruvbox=, as it provides nice
@@ -3150,6 +3186,7 @@ This mode gets derived by all programming modes.
    (prog-mode-hook . hl-todo-mode)
    (prog-mode-hook . page-break-lines-mode)
    (prog-mode-hook . highlight-indent-guides-mode)
+   (prog-mode-hook . tempel-setup-capf)
    (prog-mode-hook . turn-on-hes-mode)
    (prog-mode-hook . flymake-mode)
    (prog-mode-hook . highlight-numbers-mode)
@@ -3181,9 +3218,7 @@ anyone should try Emacs.
   :hook
   ((org-mode-hook . auto-fill-mode)
    (org-mode-hook . hes-mode)
-   (org-mode-hook . yas-minor-mode)
    (org-mode-hook . eldoc-mode)
-   ;; (org-mode-hook . visual-line-mode)
    (org-mode-hook . (lambda () (whitespace-toggle-options 'lines-tail))))
   :custom
   (org-return-follows-link t)
