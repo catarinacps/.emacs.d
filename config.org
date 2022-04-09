@@ -130,6 +130,7 @@ Cool Emacs configs from cool people:
     - [[=embark-consult=][=embark-consult=]]
     - [[=notmuch=][=notmuch=]]
     - [[=tempel=][=tempel=]]
+    - [[=puni=][=puni=]]
   - [[Theme][Theme]]
 - [[File modes][File modes]]
   - [[=prog-mode=][=prog-mode=]]
@@ -334,6 +335,7 @@ gawk '/\(use-package |:straight/ { print $2, $3 }' config.el |
 - preproc-font-lock
 - prog-mode
 - project
+- puni
 - pyenv
 - python
 - racket-mode
@@ -1085,11 +1087,6 @@ file.
     "<f9>" #'hcps/get-selected-text
     "M--" #'text-scale-decrease
     "M-+" #'text-scale-increase
-    "C-S-h" #'tab-previous
-    "C-S-l" #'tab-next
-    "C-S-n" #'tab-new
-    "C-S-c" #'tab-close
-    "C-S-s" #'tab-select
     "M-K" #'hcps/move-line-up
     "M-J" #'hcps/move-line-down
     "<f12>" #'menu-bar-mode)
@@ -3154,7 +3151,18 @@ A tiny package that modernizes the =tempo= built-in template package!
    "M-n" #'tempel-next
    "M-p" #'tempel-previous
    [remap keyboard-quit] #'tempel-abort))
+#+end_src
 
+*** =puni=
+
+Soft parenthesis handling!
+
+#+begin_src emacs-lisp :tangle yes
+(use-package puni
+  :demand
+  :commands (puni-disable-puni-mode)
+  :config
+  (puni-global-mode))
 #+end_src
 
 ** Theme
@@ -4202,6 +4210,7 @@ Finally, the mode's final configuration
    ("\\.cl\\'"   . lisp-mode))
   :hook
   ((lisp-mode-hook . aggressive-indent-mode)
+   (lisp-mode-hook . puni-disable-puni-mode)
    (lisp-mode-hook . lispy-mode)
    (lisp-mode-hook . lisp-extra-font-lock-mode))
   :custom
@@ -4647,6 +4656,7 @@ Fucking finally
    ("\\.cljs\\'" . clojurescript-mode))
   :hook
   ((clojure-mode-hook . aggressive-indent-mode)
+   (clojure-mode-hook . puni-disable-puni-mode)
    (clojure-mode-hook . eglot-ensure)
    (clojure-mode-hook . lispy-mode))
   :config
