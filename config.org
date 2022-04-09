@@ -58,6 +58,7 @@ Cool Emacs configs from cool people:
     - [[=use-package=][=use-package=]]
   - [[Built-in][Built-in]]
     - [[=whitespace=][=whitespace=]]
+    - [[=view=][=view=]]
     - [[=compile=][=compile=]]
     - [[=tramp=][=tramp=]]
     - [[=ansi-color=][=ansi-color=]]
@@ -363,6 +364,7 @@ gawk '/\(use-package |:straight/ { print $2, $3 }' config.el |
 - use-package
 - vertico
 - vertico-directory
+- view
 - vimish-fold
 - vimrc-mode
 - visual-fill-column
@@ -1306,6 +1308,26 @@ Let's monitor ourselves with =whitespace=.
   (whitespace-line-column nil)
   (whitespace-style
    '(face tabs indentation trailing lines-tail space-after-tab space-before-tab)))
+#+end_src
+
+*** =view=
+
+I didn't know this existed before like 5 seconds ago.
+
+#+begin_src emacs-lisp :tangle yes
+(use-package view
+  :demand t
+  :straight (:type built-in)
+  :custom
+  (view-read-only t)
+  :general
+  (:keymaps 'view-mode-map
+   "/" #'search-forward
+   "?" #'search-backward
+   "k" #'scroll-up
+   "j" #'scroll-down)
+  ("C-v" #'View-scroll-half-page-forward
+   "M-v" #'View-scroll-half-page-backward))
 #+end_src
 
 *** =compile=
