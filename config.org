@@ -1962,14 +1962,18 @@ very pretty on =gruvbox=).
 
 #+begin_src emacs-lisp :tangle yes
 (use-package smart-mode-line
+  :disabled
   :demand t
+  :init
+  (setq sml/use-projectile-p nil
+        sml/projectile-loaded-p nil
+        sml/projectile-replacement-format "")
   :custom
   (sml/size-indication-format " %I ")
   (sml/line-number-format "%4l")
-  (sml/use-projectile-p nil)
   (sml/shorten-directory nil)
   (sml/shorten-modes t)
-  (sml/mode-width 'right)
+  (sml/mode-width 'full)
   (sml/name-width 40)
   (sml/theme 'respectful)
   (sml/no-confirm-load-theme t)
