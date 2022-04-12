@@ -764,10 +764,10 @@ Silly names for easier path usage.
   (defconst current-user (getenv "USER") "The current user.")
   (defconst home-dir (getenv "HOME") "The user home dir.")
 
-  (defconst root-dir (expand-file-name user-emacs-directory) "The root dir of Emacs.")
-  (defconst lisp-dir (expand-file-name "lisp" root-dir) "The extra emacs-lisp directory.")
-  (defconst var-user-dir (expand-file-name "var" root-dir) "The temporaries directory.")
-  (defconst vendor-user-dir (expand-file-name "vendor" lisp-dir) "The externally .el directory.")
+  (defconst lisp-user-dir (expand-file-name "lisp" user-emacs-directory) "The extra emacs-lisp directory.")
+  (defconst var-user-dir (expand-file-name "var" user-emacs-directory) "The temporaries directory.")
+  (defconst straight-user-dir (expand-file-name "straight/repos") "The default straight repos directory.")
+  (defconst vendor-user-dir (expand-file-name "vendor" lisp-user-dir) "The externally .el directory.")
   (defconst documents-user-dir (expand-file-name "Documents" home-dir) "The (usually) default documents directory.")
   (defconst proj-user-dir (expand-file-name "Repositories" home-dir) "Default projects directory.")
   (defconst onedrive-user-dir (expand-file-name "OneDrive" home-dir) "Default OneDrive path."))
@@ -1424,7 +1424,7 @@ Keep a list of recent files with =recentf=
     package-user-dir
     no-littering-var-directory
     no-littering-etc-directory
-    (expand-file-name "savefile" root-dir)))
+    (expand-file-name "savefile" user-emacs-directory)))
   (recentf-auto-cleanup 'never)
   :config
   (recentf-mode 1))
@@ -2014,13 +2014,12 @@ very pretty on =gruvbox=).
   (sml/theme 'respectful)
   (sml/no-confirm-load-theme t)
   (sml/replacer-regexp-list
-   '(("^~/\\.emacs\\.d/straight/repos/" ":STRAIGHT:")
-     ("^~/\\.emacs\\.d/" ":ED:")
+   `((,straight-user-dir ":STRAIGHT:")
+     (,user-emacs-directory ":ED:")
      ("^/sudo:.*:" ":SU:")
-     ("^~/Documents/" ":DOC:")
-     ("^~/Repositories/" ":VCS:")
-     ("^~/OneDrive/CIC/" ":UNI:")
-     ("^~/OneDrive/" ":OD:")))
+     (,documents-user-dir ":DOC:")
+     (,proj-user-dir ":VCS:")
+     (,onedrive-user-dir ":OD:")))
   :config
   (sml/setup))
 #+end_src
@@ -2606,7 +2605,7 @@ I use =yasnippet= to handle my snippet needs.
   :hook
   (html-mode-hook . yas-minor-mode)
   :custom
-  (yas-snippet-dirs `(,(expand-file-name "snippets" root-dir)))
+  (yas-snippet-dirs `(,(expand-file-name "snippets" user-emacs-directory)))
   :config
   (general-def 'insert 'yas-minor-mode-map
     "<tab>" yas-maybe-expand)
