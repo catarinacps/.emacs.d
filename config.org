@@ -82,7 +82,6 @@ Cool Emacs configs from cool people:
     - [[=subword=][=subword=]]
     - [[=dired=][=dired=]]
   - [[Extensions][Extensions]]
-    - [[=evil=][=evil=]]
     - [[=smart-mode-line=][=smart-mode-line=]]
     - [[=orderless=][=orderless=]]
     - [[=cape=][=cape=]]
@@ -1072,17 +1071,12 @@ file.
   :preface
   (defconst hcps/leader-key "C-c"
     "Leader key for some personal commands.")
-  (defconst hcps/alt-leader-key "C-:"
-    "Alternate leader key.")
   (defvar hcps/leader-map (make-sparse-keymap)
     "Keymap for all my leader bindings.")
   :init
   (general-def
     :keymaps 'override
-    hcps/alt-leader-key '(:keymap hcps/leader-map :package general)
     hcps/leader-key '(:keymap hcps/leader-map :package general)
-    "C-x C-b" #'ibuffer
-    "C-x k" #'kill-this-buffer
     ;; "C-c x" #'hcps/date-iso
     "<f9>" #'hcps/get-selected-text
     "M--" #'text-scale-decrease
@@ -1093,25 +1087,11 @@ file.
   :config
   ;; leader-map keybindings
   (general-def 'hcps/leader-map
-    "s" #'save-buffer
-    "k" #'kill-this-buffer
-    "i" #'indent-region
-    "b" #'switch-to-buffer
-    "e c" #'comment-dwim
+    "\\" #'indent-region
     "e a" #'align-current
-    "e p" #'yank-pop
     "e e" #'eval-region
-    "n j" #'goto-line
-    "f f" #'find-file
-    "w k" #'delete-window
-    "w v" #'split-window-vertically
-    "w h" #'split-window-horizontally
-    "v n p" #'narrow-to-page
-    "v n f" #'narrow-to-defun
-    "v n r" #'narrow-to-region
     ;; cute names for the prefixes (some will only be defined further
     ;; along)
-    "v n w" #'widen
     "g" '(:ignore t :wk "magit")
     "f" '(:ignore t :wk "file")
     "w" '(:ignore t :wk "window")
@@ -1122,8 +1102,7 @@ file.
     "e" '(:ignore t :wk "edit")
     "p" '(:ignore t :wk "project")
     "l" '(:ignore t :wk "mail")
-    "m e" '(:ignore t :wk "eglot")
-    "v n" '(:ignore t :wk "narrow")))
+    "m e" '(:ignore t :wk "eglot")))
 #+end_src
 
 *** =hide-mode-line=
@@ -1158,16 +1137,8 @@ A Collection of Ridiculously Useful eXtensions for Emacs.
 
 #+begin_src emacs-lisp :tangle yes
 (use-package crux
-  :demand t
-  :commands
-  (crux-with-region-or-buffer)
   :hook
   (find-file-hook . crux-reopen-as-root)
-  :preface
-  (defvar hcps/crux-advice-functions '(untabify indent-region eval-region))
-  :init
-  (dolist (fun hcps/crux-advice-functions)
-    (advise-once fun :before (lambda (&rest _) (require 'crux))))
   :general
   (:keymaps 'hcps/leader-map
    ;; file stuff
@@ -1182,9 +1153,7 @@ A Collection of Ridiculously Useful eXtensions for Emacs.
   (:keymaps 'hcps/leader-map
    ;; edit stuff
    :prefix "e"
-   "E" #'crux-eval-and-replace)
-  :config
-  (hcps/macro-dolist crux-with-region-or-buffer hcps/crux-advice-functions))
+   "E" #'crux-eval-and-replace))
 #+end_src
 
 *** =hydra=                                                             :WIP:
@@ -1461,15 +1430,10 @@ Way better than the default one (and is built-in!)
   :straight (:type built-in)
   :general
   (:keymaps 'ibuffer-mode-map
-   "q" 'kill-this-buffer
-   "j" 'ibuffer-forward-line
-   "k" 'ibuffer-backward-line
-   "K" 'ibuffer-do-kill-lines
-   "J" 'ibuffer-jump-to-buffer)
+   "q" #'kill-this-buffer)
   (:keymaps 'hcps/leader-map
-   "B" 'ibuffer)
-  (:keymaps 'override
-   "C-x C-b" 'ibuffer))
+   "B" #'ibuffer)
+  ("C-x C-b" #'ibuffer))
 #+end_src
 
 *** =autoinsert=
@@ -1808,7 +1772,7 @@ The ones from MELPA and ELPA and whatever.
 
 - [X] vterm
 
-*** =evil=
+*** =evil=                                                           :noexport:
 
 =evil=, or /Extensible vi Layer/, is a minor mode that changes Emacs text editing
 keybindings to match the modal edit modes of vi and vim. Yes, you can have the
@@ -2213,13 +2177,6 @@ Think of it as =counsel= but without needing =ivy= to work.
 #+begin_src emacs-lisp :tangle yes
 (use-package consult
   :commands consult-xref
-  :preface
-  (defun hcps/evil-scroll-to-top (&rest _)
-    "Almost like a hook, kinda"
-    (call-interactively #'evil-scroll-line-to-top))
-  :init
-  (dolist (fun '(consult-line consult-goto-line consult-outline))
-    (advice-add fun :after #'hcps/evil-scroll-to-top))
   :custom
   (consult-narrow-key "<")
   (consult-project-root-function
@@ -2228,7 +2185,6 @@ Think of it as =counsel= but without needing =ivy= to work.
        (car (project-roots project)))))
   :general
   (:keymaps 'hcps/leader-map
-   "b" #'consult-buffer
    "f b" #'consult-bookmark
    "f r" #'consult-recent-file
    "e p" #'consult-yank-pop
@@ -2241,8 +2197,8 @@ Think of it as =counsel= but without needing =ivy= to work.
    "n f" #'consult-flycheck
    "n j" #'consult-goto-line
    "m f" #'consult-flymake)
-  (:keymaps 'global-map
-   "<help> a" #'consult-apropos))
+  ("C-x b" #'consult-buffer
+   "C-h a" #'consult-apropos))
 #+end_src
 
 *** =marginalia=
@@ -2334,8 +2290,8 @@ cool extension that provides such functionality.
                      (bookmarks . 5)))
   :general
   (:keymaps 'dashboard-mode-map
-   "j" #'widget-forward
-   "k" #'widget-backward
+   "n" #'widget-forward
+   "p" #'widget-backward
    "m" #'dashboard-jump-to-bookmarks
    "r" #'dashboard-jump-to-recent-files)
   :config
@@ -2739,10 +2695,10 @@ Also, =git-timemachine= is a beautiful way to walk through git history:
 #+begin_src emacs-lisp :tangle yes
 (use-package git-timemachine
   :after magit
-  :demand t
+  :hook
+  (git-timemachine-mode-hook . read-only-mode)
   :general
-  (:states '(normal visual)
-   :keymaps 'git-timemachine-mode-map
+  (:keymaps 'git-timemachine-mode-map
    "q" #'git-timemachine-quit
    "w" #'git-timemachine-kill-abbreviated-revision
    "g" #'git-timemachine-show-nth-revision
@@ -3520,10 +3476,8 @@ Configurations related to this feature in specific
    '(org-attach-id-ts-folder-format org-attach-id-uuid-folder-format))
   (org-attach-preferred-new-method 'id)
   :general
-  (:states '(normal visual)
-   :keymaps 'org-mode-map
+  (:keymaps 'org-mode-map
    :prefix hcps/leader-key
-   :non-normal-prefix hcps/alt-leader-key
    "m a" #'org-attach))
 #+end_src
 
@@ -3540,10 +3494,8 @@ As of Org 9.4, there is a =org-refile.el=!
   (org-refile-allow-creating-parent-nodes 'confirm)
   (org-refile-targets '((org-agenda-files :maxlevel . 1)))
   :general
-  (:states '(normal visual)
-   :keymaps 'org-mode-map
+  (:keymaps 'org-mode-map
    :prefix hcps/leader-key
-   :non-normal-prefix hcps/alt-leader-key
    "m r" #'org-refile))
 #+end_src
 
@@ -3615,10 +3567,8 @@ Configurations relating all the numerous org exporters.
      ("h" . "html")
      ("o" . "odt")))
   :general
-  (:states '(normal visual)
-   :keymaps 'org-mode-map
+  (:keymaps 'org-mode-map
    :prefix hcps/leader-key
-   :non-normal-prefix hcps/alt-leader-key
    "m e" #'org-export-dispatch))
 #+end_src
 
@@ -3732,10 +3682,8 @@ To export pretty slide presentations
    '(("onlyenv" "O" "\\begin{onlyenv}%a" "\\end{onlyenv}")
      ("minipage" "m" "\\begin{minipage}[%R]{%O}" "\\end{minipage}%")))
   :general
-  (:states '(normal visual)
-   :keymaps 'org-beamer-mode-map
+  (:keymaps 'org-beamer-mode-map
    :prefix hcps/leader-key
-   :non-normal-prefix hcps/alt-leader-key
    "m b" '(:ignore t :wk "beamer")
    "m b e" #'org-beamer-select-environment
    "m b p" #'org-beamer-export-to-pdf))
@@ -3810,10 +3758,8 @@ Now, some configurations relating org-babel and its magic source blocks.
      (lilypond . t)
      (latex . t)))
   :general
-  (:states '(normal visual)
-   :keymaps 'org-mode-map
+  (:keymaps 'org-mode-map
    :prefix hcps/leader-key
-   :non-normal-prefix hcps/alt-leader-key
    "m x" #'org-babel-execute-buffer
    "m z" #'org-babel-tangle-block
    "m Z" #'org-babel-tangle)
@@ -3964,10 +3910,7 @@ that can really be of great use while editing C and C++ code.
   :general
   (:keymaps 'c-mode-base-map
    :prefix hcps/leader-key
-   :non-normal-prefix hcps/alt-leader-key
-   "m f" #'clang-format-region)
-  :config
-  (crux-with-region-or-buffer clang-format-region))
+   "m f" #'clang-format-region))
 #+end_src
 
 ** CUDA
@@ -4021,12 +3964,10 @@ Statistics/. It provides you with everything you need from R.
    "<tab>" #'ess-indent-or-complete)
   (:keymaps 'ess-r-mode-map
    :prefix hcps/leader-key
-   :non-normal-prefix hcps/alt-leader-key
    "m c" #'ess-eval-region-or-function-or-paragraph-and-step
    "m r" #'ess-eval-region)
   (:keymaps 'ess-r-mode-map
    :prefix hcps/leader-key
-   :non-normal-prefix hcps/alt-leader-key
    "m e" #'Rd-mode-insert-skeleton
    "m f" #'Rd-font
    "m j" #'Rd-mode-insert-item
@@ -4066,7 +4007,6 @@ As for shell-scripting:
   :general
   (:keymaps 'sh-mode-map
    :prefix hcps/leader-key
-   :non-normal-prefix hcps/alt-leader-key
    "m s" #'sh-set-shell
    "m i c" #'sh-case
    "m i f" #'sh-for
@@ -4338,8 +4278,7 @@ Packages to write Julia source code in Emacs.
   ((julia-mode-hook . tree-sitter-mode)
    (julia-mode-hook . aggressive-indent-mode))
   :general
-  (:states 'insert
-   :keymaps 'julia-mode-map
+  (:keymaps 'julia-mode-map
    "M-RET" #'hcps/insert-julia-pipe))
 #+end_src
 
@@ -4375,7 +4314,6 @@ Let's start with some basic =AUCTeX= configuration
   :general
   (:keymaps 'LaTeX-mode-map
    :prefix hcps/leader-key
-   :non-normal-prefix hcps/alt-leader-key
    "m e" #'LaTeX-environment
    "m s" #'LaTeX-section
    "m m" #'TeX-insert-macro))
@@ -4395,7 +4333,6 @@ And =RefTeX= to follow it
   :general
   (:keymaps 'LaTeX-mode-map
    :prefix hcps/leader-key
-   :non-normal-prefix hcps/alt-leader-key
    "m b" #'reftex-label
    "m r" #'reftex-reference
    "m c" #'reftex-citation
@@ -4499,7 +4436,6 @@ Old language, still great for doing admin stuff in few lines.
   :general
   (:keymaps 'cperl-mode-map
    :prefix hcps/leader-key
-   :non-normal-prefix hcps/alt-leader-key
    "i" #'cperl-indent-region)
   :config
   (font-lock-add-keywords
@@ -4558,7 +4494,6 @@ Diagrams are cool
   :general
   (:keymaps 'graphviz-dot-mode-map
    :prefix hcps/leader-key
-   :non-normal-prefix hcps/alt-leader-key
    "m f" #'graphviz-dot-indent-graph
    "m p" #'graphviz-dot-preview))
 #+end_src
@@ -4693,7 +4628,6 @@ also configure CIDER
   :general
   (:keymaps 'clojure-mode-map
    :prefix hcps/leader-key
-   :non-normal-prefix hcps/alt-leader-key
    "m i" #'cider-jack-in))
 #+end_src
 
@@ -4716,7 +4650,6 @@ and =inf-clojure= (inferior repl buffer for Clojure)
   :general
   (:keymaps 'clojure-mode-map
    :prefix hcps/leader-key
-   :non-normal-prefix hcps/alt-leader-key
    "m R" #'inf-clojure)
   :config
   (setf (alist-get 'joker inf-clojure-startup-forms) "joker --no-readline"))
@@ -4741,7 +4674,6 @@ Yes! I've came full circle and now I love Lisp/Scheme, what the heck.
   :general
   (:keymaps 'racket-mode-map
    :prefix hcps/leader-key
-   :non-normal-prefix hcps/alt-leader-key
    "m x" #'racket-run-and-switch-to-repl
    "m l" #'racket-insert-lambda))
 #+end_src
