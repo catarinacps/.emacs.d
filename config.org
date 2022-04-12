@@ -1999,8 +1999,7 @@ very pretty on =gruvbox=).
   (setq-default completion-category-defaults nil)
   :custom
   (completion-styles '(orderless))
-  (completion-category-overrides '((file (styles . (partial-completion)))
-                                   (eglot (styles . (orderless)))))
+  (completion-category-overrides '((eglot (styles . (orderless)))))
   (orderless-matching-styles '(orderless-initialism orderless-regexp orderless-prefixes))
   :custom-face
   (orderless-match-face-0 ((t (:weight bold :foreground "#d75f5f"))))
@@ -2350,7 +2349,7 @@ like to use =anzu=.
   :general
   (:keymaps 'hcps/leader-map
    :prefix "e"
-   "r" #'anzu-replace-at-cursor-thing
+   "r" #'anzu-query-replace-at-cursor-thing
    "q" #'anzu-query-replace-regexp)
   :config
   (global-anzu-mode 1))
@@ -3873,7 +3872,7 @@ And better pre-processor highlighting
 (use-package preproc-font-lock
   :commands (preproc-font-lock-mode preproc-font-lock-global-mode)
   :hook
-  ((c-mode-hook c++-mode-hook)   . preproc-font-lock-mode)
+  ((c-mode-hook c++-mode-hook) . preproc-font-lock-mode)
   :custom-face
   (preproc-font-lock-preprocessor-background ((t :background "#302c2b"))))
 #+end_src
