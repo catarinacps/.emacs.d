@@ -826,7 +826,7 @@ Here's everything related to the mode-line.
 (setq-default display-time-format "%H:%M "
               display-time-default-load-average nil)
 
-(add-to-list 'mode-line-misc-info '("@" system-name) t)
+;; (add-to-list 'mode-line-misc-info '("@" system-name) t)
 
 (display-time-mode 1)
 (line-number-mode 1)
