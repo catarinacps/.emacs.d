@@ -6,6 +6,13 @@ These configurations represent my preferred version of Emacs, one that tries to
 be as minimalist as +I want+ possible. Beware that this configuration uses a
 cutting-edge version of Emacs, so YMMV.
 
+#+begin_src emacs-lisp :tangle no
+emacs-version
+#+end_src
+
+#+RESULTS:
+: 29.0.50
+
 Cool Emacs configs from cool people:
 
 - [[https://github.com/caisah/emacs.dz][Lots of cool people]]
