@@ -136,6 +136,7 @@ Cool Emacs configs from cool people:
     - [[=embark-consult=][=embark-consult=]]
     - [[=notmuch=][=notmuch=]]
     - [[=tempel=][=tempel=]]
+    - [[=forge=][=forge=]]
     - [[=puni=][=puni=]]
   - [[Theme][Theme]]
 - [[File modes][File modes]]
@@ -268,6 +269,7 @@ gawk '/\(use-package |:straight/ { print $2, $3 }' config.el |
 - files
 - flymake
 - flymake-diagnostic-at-point
+- forge
 - gcmh
 - gdb-mi
 - general
@@ -3114,6 +3116,16 @@ A tiny package that modernizes the =tempo= built-in template package!
    "M-n" #'tempel-next
    "M-p" #'tempel-previous
    [remap keyboard-quit] #'tempel-abort))
+#+end_src
+
+*** =forge=
+
+Add commands to =magit= that interact with =git= forges!
+
+#+begin_src emacs-lisp :tangle yes
+(use-package forge
+  :disabled
+  :after magit)
 #+end_src
 
 *** =puni=
