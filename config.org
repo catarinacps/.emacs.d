@@ -2814,17 +2814,17 @@ media files.
   (hcps/hook-require-once pre-command-hook openwith)
   :custom
   (openwith-associations
-   '(("\\.pdf$" "zathura" (file))
-     ;; ("\\.jpe?g$" "sxiv" (file))
-     ;; ("\\.png$" "sxiv" (file))
-     ;; ("\\.svg$" "sxiv" (file))
-     ;; ("\\.jpeg$" "sxiv" (file))
-     ;; ("\\.bmp$" "sxiv" (file))
-     ("\\.flac$" "mpv" (file))
-     ("\\.mkv$" "mpv" (file))
-     ("\\.mp3$" "mpv" (file))
-     ("\\.mp4$" "mpv" (file))))
-  (openwith-confirm-invocation nil)
+   '(("\\.pdf\\'" "xdg-open" (file))
+     ;; ("\\.jpe?g\\'" "sxiv" (file))
+     ;; ("\\.png\\'" "sxiv" (file))
+     ;; ("\\.svg\\'" "sxiv" (file))
+     ;; ("\\.jpeg\\'" "sxiv" (file))
+     ;; ("\\.bmp\\'" "sxiv" (file))
+     ("\\.flac\\'" "mpv" (file))
+     ("\\.mkv\\'" "mpv" (file))
+     ("\\.mp3\\'" "mpv" (file))
+     ("\\.mp4\\'" "mpv" (file))))
+  (openwith-confirm-invocation t)
   :config
   (openwith-mode 1))
 #+end_src
