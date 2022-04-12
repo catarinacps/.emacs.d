@@ -4277,11 +4277,12 @@ Let's start with some basic =AUCTeX= configuration
   :commands (tex-mode plain-tex-mode texinfo-mode latex-mode doctex-mode TeX-tex-mode)
   :mode ("\\.tex\\'" . TeX-latex-mode)
   :hook
-  ((LaTeX-mode-hook TeX-mode-hook) . auto-fill-mode)
+  (((LaTeX-mode-hook TeX-mode-hook) . auto-fill-mode)
+   ((LaTeX-mode-hook TeX-mode-hook) . rainbow-delimiters-mode))
   :init
   (setq reftex-plug-into-AUCTeX t)
   :custom
-  ;; (TeX-auto-save t)
+  (TeX-auto-save t)
   (TeX-master nil)
   (TeX-engine 'xetex)
   (TeX-parse-self t)
