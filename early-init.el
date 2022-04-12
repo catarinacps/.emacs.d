@@ -23,10 +23,7 @@
       package--init-file-ensured t)
 
 ;; setup some frame configurations early so we don't waste time later
-(setq default-frame-alist `((font . ,(if (eq system-type 'darwin)
-                                         "Fira Mono 16"
-                                       "Unifont"))
-                            (menu-bar-lines . 0)
+(setq default-frame-alist `((font . "Source Code Pro 13")
                             (tool-bar-lines . 0)
                             (tab-bar-show . t)
                             (vertical-scroll-bars . nil)
