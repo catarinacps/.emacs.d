@@ -1448,10 +1448,7 @@ Way better than the default one (and is built-in!)
 *** =autoinsert=
 
 To easily insert boilerplate text into files that need it, e.g. an org-mode
-beamer file, org-mode latex-file or a shell-script. The default is already
-pretty packed with templates, but I intend to ignore most of them. In my
-opinion, if I created an =autoinsert= directory, the templates would be easier to
-maintain and the configuration would be cleaner.
+beamer file, org-mode latex-file or a shell-script.
 
 - [[https://emacs.stackexchange.com/questions/45629/template-for-new-file]]
 - [[https://www.emacswiki.org/emacs/AutoInsertMode]]
@@ -1460,51 +1457,14 @@ maintain and the configuration would be cleaner.
 #+begin_src emacs-lisp :tangle yes
 (use-package autoinsert
   :straight (:type built-in)
-  :preface
-  (defmacro hcps/yas-auto-insert-template (name mode)
-    "Looks up the given name and expands it on point."
-    (let ((func (intern (concat "hcps/" (symbol-name mode) "-insert-" name))))
-      `(defun ,func ()
-     (interactive)
-     (yas-expand-snippet (yas-lookup-snippet ,name #',mode)))))
-  (defmacro auto-insert-choose-and-call (template-alist)
-    "Interactively choose and call a function from TEMPLATE-ALIST.
-TEMPLATE-ALIST should be a list whose elements are (STRING FUNCTION).
-Intended for use in `auto-insert-alist'"
-    `(let ((cell (assoc (completing-read "Template: " ,template-alist) ,template-alist)))
-       (when cell
-     (funcall (cadr cell)))))
-  :init
-  (hcps/yas-auto-insert-template "header-template" c-mode)
-  (hcps/yas-auto-insert-template "header-template" c++-mode)
-  (hcps/yas-auto-insert-template "source-template" c-mode)
-  (hcps/yas-auto-insert-template "simple-template" cmake-mode)
-  (hcps/yas-auto-insert-template "simple-template" makefile-mode)
-  (hcps/yas-auto-insert-template "simple-template" sh-mode)
-  (advice-add #'auto-insert :around
-          (lambda (func &rest args) (yas-minor-mode) (apply func args)))
   :hook
   (find-file-hook . auto-insert)
   :custom
   (auto-insert t)
   (auto-insert-query nil)
-  (auto-insert-directory (expand-file-name "templates/" root-dir))
-  (auto-insert-alist
-   `((("\\.h$" . "C header") . [hcps/c-mode-insert-header-template])
-     (("\\.[Hh]\\(pp\\|\\+\\+\\)$" . "C++ header") . [hcps/c++-mode-insert-header-template])
-     (("\\.[Cc]\\(pp\\|\\+\\+\\)?$" . "C / C++ source") . [hcps/c-mode-insert-source-template])
-     ;; ((org-mode . "Org mode")
-     ;;  lambda nil
-     ;;  ,(auto-insert-choose-and-call
-     ;;    (("Beamer presentation"
-     ;;      (hcps/yas-auto-insert-template "org-beamer-template" org-mode))
-     ;;     ("LaTeX document"
-     ;;      (hcps/yas-auto-insert-template "org-latex-template" org-mode))
-     ;;     ("Common document"
-     ;;      (hcps/yas-auto-insert-template "org-template" org-mode)))))
-     ((cmake-mode . "CMake") . [hcps/cmake-mode-insert-simple-template])
-     ((makefile-mode . "Makefile") . [hcps/makefile-mode-insert-simple-template])
-     ((sh-mode . "Shell Script") . [hcps/sh-mode-insert-simple-template]))))
+  (auto-insert-directory (expand-file-name "templates/" user-emacs-directory))
+  :config
+  (auto-insert-mode 1))
 #+end_src
 
 *** =comint=
