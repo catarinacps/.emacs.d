@@ -3097,9 +3097,10 @@ Soft parenthesis handling!
 #+begin_src emacs-lisp :tangle yes
 (use-package puni
   :demand
-  :commands (puni-disable-puni-mode)
-  :config
-  (puni-global-mode))
+  :commands (puni-disable-puni-mode puni-mode)
+  :hook
+  ((text-mode-hook . puni-mode)
+   (eval-expression-minibuffer-setup-hook . puni-mode)))
 #+end_src
 
 ** Theme
@@ -3150,6 +3151,7 @@ This mode gets derived by all programming modes.
   ((prog-mode-hook . rainbow-delimiters-mode)
    (prog-mode-hook . subword-mode)
    (prog-mode-hook . eldoc-mode)
+   (prog-mode-hook . puni-mode)
    (prog-mode-hook . hl-todo-mode)
    (prog-mode-hook . page-break-lines-mode)
    (prog-mode-hook . highlight-indent-guides-mode)
