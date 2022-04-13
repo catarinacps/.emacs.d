@@ -141,6 +141,7 @@ Cool Emacs configs from cool people:
   - [[Theme][Theme]]
 - [[File modes][File modes]]
   - [[=prog-mode=][=prog-mode=]]
+  - [[=text-mode=][=text-mode=]]
   - [[Org][Org]]
     - [[Add-ons][Add-ons]]
     - [[Export][Export]]
@@ -363,6 +364,7 @@ gawk '/\(use-package |:straight/ { print $2, $3 }' config.el |
 - tempel
 - terraform-mode
 - tex
+- text-mode
 - toc-org
 - tramp
 - treemacs
@@ -809,13 +811,6 @@ any further.
               require-final-newline t
               x-stretch-cursor t
               cursor-in-non-selected-windows nil)
-#+end_src
-
-Also, =auto-fill-mode= is very useful to justify paragraphs
-automatically while writing.
-
-#+begin_src emacs-lisp :tangle yes
-(add-hook 'text-mode-hook #'turn-on-auto-fill)
 #+end_src
 
 *** Mode line
@@ -1277,8 +1272,7 @@ Let's monitor ourselves with =whitespace=.
   :straight (:type built-in)
   :commands (whitespace-mode whitespace-cleanup delete-trailing-whitespace)
   :hook
-  ((before-save-hook . whitespace-cleanup)
-   (text-mode-hook   . whitespace-mode))
+  (before-save-hook . whitespace-cleanup)
   :custom
   (whitespace-line-column nil)
   (whitespace-style
@@ -2483,12 +2477,11 @@ Of course, =flyspell= corrects your writing!
 
 #+begin_src emacs-lisp :tangle yes
 (use-package wucuo
+  :commands (wucuo-start)
   :delight
   (wucuo-mode " fs")
   (flyspell-mode " fs")
   (flyspell-prog-mode " fs")
-  :hook
-  (text-mode-hook . wucuo-start)
   :custom
   (ispell-program-name "aspell")
   (ispell-extra-args '("--sug-mode=ultra" "--run-together" "--run-together-limit=16"))
@@ -2834,10 +2827,8 @@ To make pretty page breaks in your Emacs buffers:
 
 #+begin_src emacs-lisp :tangle yes
 (use-package page-break-lines
-  :commands page-break-lines-mode
+  :commands (page-break-lines-mode)
   :delight
-  :hook
-  (text-mode-hook . page-break-lines-mode)
   :custom
   (page-break-lines-max-width (floor (/ fill-column 2)))
   (page-break-lines-char ?-)
@@ -2930,10 +2921,9 @@ should be variable.
 #+begin_src emacs-lisp :tangle yes
 (use-package mixed-pitch
   :disabled
+  :commands (mixed-pitch-mode)
   :delight
   (mixed-pitch-mode " mp")
-  :hook
-  (text-mode-hook . mixed-pitch-mode)
   :custom-face
   (variable-pitch ((t (:font "Iosevka Aile" :weight light)))))
 #+end_src
@@ -3067,8 +3057,6 @@ A tiny package that modernizes the =tempo= built-in template package!
     (setq-local completion-at-point-functions
                 (cons #'tempel-expand
                       completion-at-point-functions)))
-  :hook
-  (text-mode-hook . tempel-setup-capf)
   :custom
   (tempel-path (mapcar (lambda (f) (expand-file-name f hcps/tempel-snippets-dir))
                        '("prog-mode" "lisp-mode" "text-mode" "org-mode")))
@@ -3099,8 +3087,7 @@ Soft parenthesis handling!
   :demand
   :commands (puni-disable-puni-mode puni-mode)
   :hook
-  ((text-mode-hook . puni-mode)
-   (eval-expression-minibuffer-setup-hook . puni-mode)))
+  (eval-expression-minibuffer-setup-hook . puni-mode))
 #+end_src
 
 ** Theme
@@ -3132,7 +3119,7 @@ I still need to add packages relating to these languages:
 - [X] Markdown
 - [X] Clojure
 - [X] =prog-mode=
-- [ ] =text-mode=
+- [X] =text-mode=
 - [X] =bison-mode=
 - [X] Typescript
 - [ ] Scheme and Geiser
@@ -3164,6 +3151,23 @@ This mode gets derived by all programming modes.
    (prog-mode-hook . display-line-numbers-mode)))
 #+end_src
 
+** =text-mode=
+
+Sane basic configurations to =text-mode=.
+
+#+begin_src emacs-lisp :tangle yes
+(use-package text-mode
+  :straight (:type built-in)
+  :hook
+  ((text-mode-hook . whitespace-mode)
+   (text-mode-hook . page-break-lines-mode)
+   (text-mode-hook . auto-fill-mode)
+   (text-mode-hook . wucuo-start)
+   (text-mode-hook . tempel-setup-capf)
+   (text-mode-hook . mixed-pitch-mode)
+   (text-mode-hook . (lambda () (ansi-color-apply-on-region (point-min) (point-max) t)))))
+#+end_src
+
 ** Org
 
 =org-mode= is probably *the* killer mode and one of the main reasons as to why
@@ -3185,8 +3189,7 @@ anyone should try Emacs.
   :preface
   (defconst org-electric-pairs '((?/ . ?/) (?= . ?=) (?~ . ?~)))
   :hook
-  ((org-mode-hook . auto-fill-mode)
-   (org-mode-hook . hes-mode)
+  ((org-mode-hook . hes-mode)
    (org-mode-hook . eldoc-mode)
    (org-mode-hook . (lambda () (whitespace-toggle-options 'lines-tail))))
   :custom
@@ -4226,7 +4229,9 @@ image directly from the buffer using =C-c C-b=.
 
 #+begin_src emacs-lisp :tangle yes
 (use-package dockerfile-mode
-  :mode "[Dd]ockerfile\\'")
+  :mode "[Dd]ockerfile\\'"
+  :hook
+  (dockerfile-mode-hook . puni-mode))
 #+end_src
 
 ** GMPL
@@ -4235,7 +4240,9 @@ So I have syntax highlighting while editing GLPK files.
 
 #+begin_src emacs-lisp :tangle yes
 (use-package gmpl-mode
-  :mode "\\.mod\\'")
+  :mode "\\.mod\\'"
+  :hook
+  (gmpl-mode-hook . puni-mode))
 #+end_src
 
 ** Julia
@@ -4278,6 +4285,7 @@ Let's start with some basic =AUCTeX= configuration
   :mode ("\\.tex\\'" . TeX-latex-mode)
   :hook
   (((LaTeX-mode-hook TeX-mode-hook) . auto-fill-mode)
+   ((LaTeX-mode-hook TeX-mode-hook) . puni-mode)
    ((LaTeX-mode-hook TeX-mode-hook) . rainbow-delimiters-mode))
   :init
   (setq reftex-plug-into-AUCTeX t)
@@ -4472,7 +4480,8 @@ Diagrams are cool
    ("\\.dot\\'" . graphviz-dot-mode))
   :commands (graphviz-dot-mode)
   :hook
-  (graphviz-dot-mode-hook . aggressive-indent-mode)
+  ((graphviz-dot-mode-hook . aggressive-indent-mode)
+   (graphviz-dot-mode-hook . puni-mode))
   :custom
   (graphviz-dot-indent-width 4)
   :general
@@ -4517,6 +4526,7 @@ Ugh another mode that insists in putting bigger fonts everywhere...
   (defconst markdown-electric-pairs '((?_ . ?_) (?* . ?*) (?` . ?`)))
   :hook
   ((markdown-mode-hook . auto-fill-mode)
+   (markdown-mode-hook . puni-mode)
    (markdown-mode-hook . hes-mode)
    (markdown-mode-hook . eldoc-mode)
    (markdown-mode-hook . (lambda () (whitespace-toggle-options 'lines-tail))))
@@ -4668,7 +4678,9 @@ Yet Another Markup Language
 (use-package yaml-mode
   :mode
   (("\\.yaml\\'" . yaml-mode)
-   ("\\.yml\\'"  . yaml-mode)))
+   ("\\.yml\\'"  . yaml-mode))
+  :hook
+  (yaml-mode-hook . puni-mode))
 #+end_src
 
 ** GGO
