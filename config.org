@@ -138,6 +138,7 @@ Cool Emacs configs from cool people:
     - [[=tempel=][=tempel=]]
     - [[=forge=][=forge=]]
     - [[=puni=][=puni=]]
+    - [[=info-colors=][=info-colors=]]
   - [[Theme][Theme]]
 - [[File modes][File modes]]
   - [[=prog-mode=][=prog-mode=]]
@@ -294,6 +295,7 @@ gawk '/\(use-package |:straight/ { print $2, $3 }' config.el |
 - hydra
 - ibuffer
 - inf-clojure
+- info-colors
 - js
 - julia-mode
 - jupyter
@@ -3088,6 +3090,21 @@ Soft parenthesis handling!
   :commands (puni-disable-puni-mode puni-mode)
   :hook
   (eval-expression-minibuffer-setup-hook . puni-mode))
+#+end_src
+
+*** =info-colors=
+
+=info-colors= makes the info node buffers a little bit more readable.
+
+#+begin_src emacs-lisp :tangle yes
+(use-package info-colors
+  :straight
+  (info-colors
+   :type git
+   :host github
+   :repo "ubolonton/info-colors")
+  :hook
+  (Info-selection-hook . info-colors-fontify-node))
 #+end_src
 
 ** Theme
