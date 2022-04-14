@@ -3181,7 +3181,6 @@ Sane basic configurations to =text-mode=.
    (text-mode-hook . auto-fill-mode)
    (text-mode-hook . wucuo-start)
    (text-mode-hook . tempel-setup-capf)
-   (text-mode-hook . mixed-pitch-mode)
    (text-mode-hook . (lambda () (ansi-color-apply-on-region (point-min) (point-max) t)))))
 #+end_src
 
