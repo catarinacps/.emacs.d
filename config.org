@@ -3230,6 +3230,7 @@ anyone should try Emacs.
   (org-outline-path-complete-in-steps nil)
   (org-fontify-done-headline t)
   (org-fontify-todo-headline t)
+  (org-catch-invisible-edits 'smart)
   ;; 10 pixels because default-font-width doesn't work with daemon mode
   (org-image-actual-width (round (* 10 fill-column 0.85)))
   (org-display-remote-inline-images 'download)
