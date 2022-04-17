@@ -3204,6 +3204,9 @@ anyone should try Emacs.
   (org-indent-mode nil org-indent)
   :preface
   (defconst org-electric-pairs '((?/ . ?/) (?= . ?=) (?~ . ?~)))
+  (defun org-mode-insert-zero-width-space ()
+    (interactive)
+    (insert "\u200B"))
   :hook
   ((org-mode-hook . hes-mode)
    (org-mode-hook . eldoc-mode)
@@ -3260,10 +3263,10 @@ anyone should try Emacs.
    :prefix hcps/leader-key
    "v n s" #'org-narrow-to-subtree
    "v n b" #'org-narrow-to-block
+   "m i" '(:ignore t :wk "insert")
    "m i d" #'org-insert-drawer
    "m i t" #'org-insert-time-stamp
    "m i l" #'org-insert-link
-   "m i" '(:ignore t :wk "insert")
    "m t" #'org-set-tags-command
    "m f" #'org-set-effort
    "m d" #'org-deadline
@@ -3271,18 +3274,19 @@ anyone should try Emacs.
    "m o" #'org-priority
    "m p" #'org-set-property
    "m s" #'org-match-sparse-tree
-   "m t" #'org-todo              ; mark a TODO item as DONE
+   "m t" #'org-todo                     ; mark a TODO item as DONE
    "m h" #'org-do-promote
    "m l" #'org-do-demote
-   "m H" #'org-promote-subtree
-   "m L" #'org-demote-subtree
-   "m C-i" #'org-toggle-inline-images
-   "m C-l" #'org-toggle-link-display
-   "m C-j" #'outline-next-visible-heading
-   "m C-k" #'outline-previous-visible-heading
    "m <tab>" #'outline-toggle-children)
   (:keymaps 'org-mode-map
-   "C-S-k" #'outline-up-heading)
+   "H-n" #'outline-next-visible-heading
+   "H-p" #'outline-previous-visible-heading
+   "H-u" #'outline-up-heading
+   "H-i" #'org-toggle-inline-images
+   "H-<" #'org-promote-subtree
+   "H->" #'org-demote-subtree
+   "H-SPC" #'org-mode-insert-zero-width-space
+   "H-TAB" #'outline-toggle-children)
   (:keymaps 'hcps/leader-map
    "o b" #'org-switchb)
   :config
@@ -3551,6 +3555,9 @@ Configurations relating all the numerous org exporters.
       (unless (file-directory-p pub-dir)
         (make-directory pub-dir)))
     (apply orig-fun extension subtreep pub-dir nil))
+  (defun org-export-remove-zero-width-space (text &rest _)
+    (unless (org-export-derived-backend-p 'org)
+      (replace-regexp-in-string "\u200B" "" text)))
   :init
   (advice-add #'org-export-output-file-name
               :around #'org-export-output-file-name-modified)
@@ -3571,7 +3578,10 @@ Configurations relating all the numerous org exporters.
   :general
   (:keymaps 'org-mode-map
    :prefix hcps/leader-key
-   "m e" #'org-export-dispatch))
+   "m e" #'org-export-dispatch)
+  :config
+  (add-to-list 'org-export-filter-final-output-functions
+               #'org-export-remove-zero-width-space t))
 #+end_src
 
 **** =ox-extra=
