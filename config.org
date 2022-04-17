@@ -3567,9 +3567,13 @@ Configurations relating all the numerous org exporters.
   (org-export-backends '(latex html ascii))
   (org-export-exclude-tags '("noexport" "NOEXPORT"))
   (org-export-allow-bind-keywords t)
+  (org-export-headline-levels 5)
+  (org-export-creator-string
+   (format "Emacs %s (Org mode %s–%s)" emacs-version (org-release) (org-git-version)))
+  (org-export-with-sub-superscripts '{})
   (org-export-with-latex t)
   (org-export-babel-evaluate t)
-  (org-export-in-background nil)
+  (org-export-in-background t)
   (org-export-snippet-translation-alist
    '(("b" . "beamer")
      ("l" . "latex")
