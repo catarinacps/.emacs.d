@@ -3227,6 +3227,7 @@ anyone should try Emacs.
   (org-use-property-inheritance nil)
   (org-startup-indented t)
   (org-startup-folded t)
+  (org-use-speed-commands t)
   (org-outline-path-complete-in-steps nil)
   (org-fontify-done-headline t)
   (org-fontify-todo-headline t)
