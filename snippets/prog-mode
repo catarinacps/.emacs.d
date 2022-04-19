@@ -2,8 +2,8 @@
 
 prog-mode
 
-(fixme (if (derived-mode-p 'lisp-mode) ";; " comment-start) "FIXME: ")
-(todo (if (derived-mode-p 'lisp-mode) ";; " comment-start) "TODO: ")
-(bug (if (derived-mode-p 'lisp-mode) ";; " comment-start) "BUG: ")
-(hack (if (derived-mode-p 'lisp-mode) ";; " comment-start) "HACK: ")
-(note (if (derived-mode-p 'lisp-mode) ";; " comment-start) "NOTE: ")
+(fixme "FIXME: " :pre (call-interactively #'comment-dwim))
+(todo "TODO: " :pre (call-interactively #'comment-dwim))
+(bug "BUG: " :pre (call-interactively #'comment-dwim))
+(hack "HACK: " :pre (call-interactively #'comment-dwim))
+(note "NOTE: " :pre (call-interactively #'comment-dwim))
