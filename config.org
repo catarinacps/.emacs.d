@@ -2113,7 +2113,7 @@ that eventually changes in the future, 'cause I like Corfu more than I like
    "SPC" #'corfu-insert-separator
    [remap newline] #'corfu-insert)
   :config
-  (corfu-global-mode 1))
+  (global-corfu-mode 1))
 #+end_src
 
 Let's also add =corfu-doc= to display documentation in a meaningful way
