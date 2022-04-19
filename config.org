@@ -3221,7 +3221,7 @@ anyone should try Emacs.
   (org-link-descriptive t)
   (org-log-done 'note)
   (org-directory (if (file-directory-p onedrive-user-dir)
-                     (expand-file-name "Org" onedrive-user-dir)
+                     (expand-file-name "org" onedrive-user-dir)
                    documents-user-dir))
   (org-cycle-emulate-tab t)
   (org-use-property-inheritance nil)
@@ -3376,7 +3376,7 @@ The ultimate journaling tool of the ultimate note-taking tool.
   (org-columns-default-format
    "%20CATEGORY(FILE) %35ITEM(TASK) %PRIORITY(P) %EFFORT(E) %DEADLINE(D) %TAGS(T)")
   (org-agenda-files
-   (append (directory-files-recursively (expand-file-name "Org" onedrive-user-dir) "\\.org\\'")
+   (append (directory-files-recursively (expand-file-name "org" onedrive-user-dir) "\\.org\\'")
        (directory-files-recursively proj-user-dir "^hcps[[:alnum:]-]*\\.org\\'")))
   (org-agenda-start-with-log-mode t)
   (org-agenda-use-tag-inheritance t)
@@ -3402,7 +3402,7 @@ The ultimate journaling tool of the ultimate note-taking tool.
           (org-agenda-files ',(directory-files-recursively proj-user-dir "^hcps[[:alnum:]-]*\\.org\\'"))))
        (tags "REFILE"
          ((org-agenda-overriding-header "TO REFILE")
-          (org-agenda-files '(,(expand-file-name "Org/organizer.org" onedrive-user-dir)))))))))
+          (org-agenda-files '(,(expand-file-name "org/organizer.org" onedrive-user-dir)))))))))
   :general
   (:keymaps 'hcps/leader-map
    "o a" #'hcps/open-agenda
@@ -3416,7 +3416,7 @@ The ultimate journaling tool of the ultimate note-taking tool.
 #+begin_src emacs-lisp :tangle yes
 (use-package org-journal
   :custom
-  (org-journal-dir (format-time-string (expand-file-name "Org/Journal/%Y" onedrive-user-dir)))
+  (org-journal-dir (format-time-string (expand-file-name "org/journal/%Y" onedrive-user-dir)))
   (org-journal-file-type 'monthly)
   (org-journal-file-format "%Y%m")
   (org-journal-date-format "%e %b %Y (%A)")
@@ -3435,7 +3435,7 @@ It is built-in and it is beautiful.
   :straight (:type built-in)
   :commands (org-capture-mode org-capture-upgrade-templates)
   :preface
-  (defconst org-main-notes-file (expand-file-name "Org/organizer.org" onedrive-user-dir)
+  (defconst org-main-notes-file (expand-file-name "org/organizer.org" onedrive-user-dir)
     "File that I use to store notes before reviewing them.")
   :custom
   (org-default-notes-file org-main-notes-file)
