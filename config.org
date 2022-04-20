@@ -259,13 +259,6 @@ gawk '/\(use-package |:straight/ { print $2, $3 }' config.el |
 - embark-consult
 - ess
 - ess-r-mode
-- evil
-- evil-collection
-- evil-matchit
-- evil-mc
-- evil-numbers
-- evil-states
-- evil-surround
 - exec-path-from-shell
 - expand-region
 - files
@@ -304,7 +297,6 @@ gawk '/\(use-package |:straight/ { print $2, $3 }' config.el |
 - lisp-extra-font-lock
 - lisp-mode
 - lispy
-- lispyville
 - lua-mode
 - magit
 - make-mode
@@ -683,20 +675,6 @@ A clear modeline is prettier sometimes
 (defun hcps/clean-mode-line ()
   "Clean mode-line format."
   (setq-local mode-line-format ""))
-#+end_src
-
-And sometimes there's no need in having an evil tag
-
-#+begin_src emacs-lisp :tangle yes
-(defun hcps/hide-evil-tag ()
-  "Some buffers don't need it."
-  (setq-local evil-normal-state-tag nil)
-  (setq-local evil-emacs-state-tag nil)
-  (setq-local evil-insert-state-tag nil)
-  (setq-local evil-replace-state-tag nil)
-  (setq-local evil-motion-state-tag nil)
-  (setq-local evil-visual-state-tag nil)
-  (setq-local evil-operator-state-tag nil))
 #+end_src
 
 also goddamnit can we please not have variable pitch?
@@ -1737,220 +1715,6 @@ The ones from MELPA and ELPA and whatever.
 
 - [X] vterm
 
-*** =evil=                                                           :noexport:
-
-=evil=, or /Extensible vi Layer/, is a minor mode that changes Emacs text editing
-keybindings to match the modal edit modes of vi and vim. Yes, you can have the
-best of both worlds!
-
-#+begin_src emacs-lisp :tangle yes
-(use-package evil
-  :disabled
-  :commands (evil-set-initial-state evil-emacs-state)
-  :defines (evil-normal-state-map evil-visual-state-map)
-  :preface
-  (defun hcps/shift-left-region ()
-    "Shift left and restore visual selection."
-    (interactive)
-    (evil-shift-left (region-beginning) (region-end))
-    (evil-normal-state)
-    (evil-visual-restore))
-  (defun hcps/shift-right-region ()
-    "Shift right and restore visual selection."
-    (interactive)
-    (evil-shift-right (region-beginning) (region-end))
-    (evil-normal-state)
-    (evil-visual-restore))
-  (defun dzop/evil-org-insert-state-in-edit-buffer (fun &rest args)
-    "Bind `evil-default-state' to `insert' before calling FUN with ARGS."
-    (let ((evil-default-state 'insert)
-          ;; Force insert state
-          (evil-emacs-state-modes nil)
-          (evil-normal-state-modes nil)
-          (evil-motion-state-modes nil)
-          (evil-visual-state-modes nil)
-          (evil-operator-state-modes nil)
-          (evil-replace-state-modes nil))
-      (apply fun args)
-      (evil-refresh-cursor)))
-  :init
-  (setq evil-want-keybinding nil)
-  (advice-add #'org-babel-do-key-sequence-in-edit-buffer
-              :around #'dzop/evil-org-insert-state-in-edit-buffer)
-  (hcps/hook-require-once pre-command-hook evil)
-  :custom
-  (evil-esc-delay 0)
-  (evil-scroll-count 15)
-  (evil-shift-width 2)
-  (evil-auto-indent t)
-  (evil-undo-system 'undo-tree)
-  ;; (evil-bigword "^[] \t\r\n()")
-  (evil-want-fine-undo t)
-  (evil-search-wrap t)
-  (evil-regexp-search t)
-  (evil-search-module 'isearch)
-  (evil-echo-state nil)
-  (evil-want-C-u-scroll t)
-  (evil-want-C-d-scroll t)
-  (evil-want-Y-yank-to-eol t)
-  (evil-ex-substitute-global t)
-  (evil-respect-visual-line-mode t)
-  (evil-mode-line-format '(before . mode-line-front-space))
-  :general
-  (:states '(normal visual)
-   hcps/leader-key '(:wk "leader" :keymap hcps/leader-map :package general)
-   "H" #'evil-beginning-of-line
-   "L" #'evil-end-of-line)
-  (:states 'insert
-   "C-y" nil
-   "<up>" #'previous-line
-   "<down>" #'next-line
-   "<left>" #'left-char
-   "<right>" #'right-char
-   "<return>" #'newline)
-  (:states 'visual
-   ">" #'hcps/shift-right-region
-   "<" #'hcps/shift-left-region)
-  :config
-  (evil-mode 1))
-#+end_src
-
-**** States
-
-Apparently the =evil-states= package isn't being loaded correctly after
-=evil=...
-
-#+begin_src emacs-lisp :tangle yes
-(use-package evil-states
-  :disabled
-  :after evil
-  ;; :demand t
-  :straight (:type built-in)
-  :custom
-  (evil-emacs-state-cursor    '("red" box))
-  (evil-normal-state-cursor   '("gray" box))
-  (evil-visual-state-cursor   '("gray" hollow))
-  (evil-insert-state-cursor   '("gray" bar))
-  (evil-motion-state-cursor   '("gray" hbar))
-  (evil-operator-state-cursor '("gray" evil-half-cursor))
-  (evil-normal-state-tag   (propertize "   NORMAL   " 'face '((:background "DarkGoldenrod2" :foreground "black"))))
-  (evil-emacs-state-tag    (propertize "   EMACS    " 'face '((:background "SkyBlue2"       :foreground "black"))))
-  (evil-insert-state-tag   (propertize "   INSERT   " 'face '((:background "chartreuse3"    :foreground "black"))))
-  (evil-replace-state-tag  (propertize "  REPLACE   " 'face '((:background "chocolate"      :foreground "black"))))
-  (evil-motion-state-tag   (propertize "   MOTION   " 'face '((:background "plum3"          :foreground "black"))))
-  (evil-visual-state-tag   (propertize "   VISUAL   " 'face '((:background "gray"           :foreground "black"))))
-  (evil-operator-state-tag (propertize "  OPERATOR  " 'face '((:background "sandy brown"    :foreground "black")))))
-#+end_src
-
-**** Cursors
-
-Here we have both =evil-matchit=, which allows you to jump between tags
-automatically,
-
-#+begin_src emacs-lisp :tangle yes
-(use-package evil-matchit
-  :disabled
-  :after evil
-  ;; :demand t
-  :custom
-  (evilmi-may-jump-by-percentage nil)
-  :config
-  (global-evil-matchit-mode 1))
-#+end_src
-
-and =evil-mc= implements the =multiple-cursors= functionality to
-=evil-mode=.
-
-#+begin_src emacs-lisp :tangle yes
-(use-package evil-mc
-  :disabled
-  :after evil
-  ;; :demand t
-  :delight
-  :general
-  (:states 'visual
-   "A" #'evil-mc-make-cursor-in-visual-selection-end
-   "I" #'evil-mc-make-cursor-in-visual-selection-beg)
-  (:states '(normal visual)
-   "" #'evil-mc-make-and-goto-prev-cursor)
-  (:keymaps 'hcps/leader-map
-   [escape] #'evil-mc-undo-all-cursors)
-  :config
-  (global-evil-mc-mode 1)
-  (fmakunbound 'evil-mc-make-and-goto-prev-cursor))
-#+end_src
-
-**** Pairs
-
-On pairs (and regions really) we have =evil-smartparens=, to use better
-bindings to =smartparens=,
-
-#+begin_src emacs-lisp :tangle no
-(use-package evil-smartparens
-  :disabled
-  :after evil
-  ;; :demand t
-  :delight
-  :hook
-  (smartparens-enabled-hook . evil-smartparens-mode))
-#+end_src
-
-and =evil-surround=, which is a port of =surround= from vim and allow
-you to quickly delete or change surrounding ="= and ='= from words or
-paragraphs or whatever, as it integrates with vim's verb way of
-expressing actions.
-
-#+begin_src emacs-lisp :tangle yes
-(use-package evil-surround
-  :disabled
-  :after evil
-  ;; :demand t
-  :general
-  (:states 'operator
-   "s" #'evil-surround-edit
-   "S" #'evil-Surround-edit)
-  (:states 'visual
-   "S" #'evil-surround-region
-   "gS" #'evil-Surround-region)
-  :config
-  (add-to-list 'evil-surround-pairs-alist '(?/ . ("/" . "/")))
-  (add-to-list 'evil-surround-pairs-alist '(?* . ("*" . "*")))
-  (global-evil-surround-mode 1))
-#+end_src
-
-**** Utilities
-
-As it gets impossible to not use vim keybindings everywhere,
-=evil-collection= adds a bunch of cool =evil= keybindings to other
-popular packages,
-
-#+begin_src emacs-lisp :tangle yes
-(use-package evil-collection
-  :disabled
-  :after evil
-  ;; :demand t
-  :delight evil-collection-unimpaired-mode
-  :config
-  (setq evil-collection-mode-list
-        (cl-set-difference evil-collection-mode-list
-                           '(magit markdown-mode org dashboard ibuffer lispy)))
-  (evil-collection-init))
-#+end_src
-
-and also =evil-numbers=, to have nice keybindings to increase or
-decrease numbers.
-
-#+begin_src emacs-lisp :tangle yes
-(use-package evil-numbers
-  :disabled
-  :after evil
-  ;; :demand t
-  :general
-  (:states 'normal
-   "C-a" #'evil-numbers/inc-at-pt
-   "C-A" #'evil-numbers/dec-at-pt))
-#+end_src
-
 *** =smart-mode-line=
 
 I use =smart-mode-line= as it is very minimalist and informative (and it looks
@@ -2215,8 +1979,7 @@ Undo and redo and kools with =undo-tree=!
         (error "Buffer %s has no local binding of `buffer-undo-tree'" (buffer-name buff)))))
   :hook
   ((after-init-hook . global-undo-tree-mode)
-   (undo-tree-visualizer-mode-hook . hide-mode-line-mode)
-   (diff-mode-hook . hcps/hide-evil-tag))
+   (undo-tree-visualizer-mode-hook . hide-mode-line-mode))
   :init
   (advice-add #'undo-tree-visualize :before #'reset-visualizer-diff)
   :custom
@@ -2745,9 +2508,7 @@ I use =aggressive-indent= to keep my code indented as I type.
   :config
   (add-to-list 'aggressive-indent-protected-commands 'undo-tree-visualize-undo)
   (add-to-list 'aggressive-indent-protected-commands 'undo-tree-visualize-redo)
-  (add-to-list 'aggressive-indent-protected-commands 'comment-dwim)
-  (add-to-list 'aggressive-indent-protected-commands 'evil-redo)
-  (add-to-list 'aggressive-indent-protected-commands 'evil-undo))
+  (add-to-list 'aggressive-indent-protected-commands 'comment-dwim))
 #+end_src
 
 *** =highligh-indent-guides=
@@ -2969,25 +2730,6 @@ the way (nor the frequency) I should be.
 (use-package lispy
   :commands (lispy-mode)
   :delight (lispy-mode " lp"))
-#+end_src
-
-With it, also configure the Evil support layer, =lispyville=
-
-#+begin_src emacs-lisp :tangle yes
-(use-package lispyville
-  :disabled
-  :delight (lispyville-mode " lv")
-  :hook
-  (eval-expression-minibuffer-setup-hook . lispyville-mode)
-  :config
-  (lispyville-set-key-theme
-   '(operators
-     c-w
-     escape
-     (additional-movement normal motion)
-     (additional-wrap normal insert)
-     additional-insert
-     slurp/barf-lispy)))
 #+end_src
 
 *** =embark=
@@ -3371,8 +3113,6 @@ The ultimate journaling tool of the ultimate note-taking tool.
     "Open the organizer file."
     (interactive)
     (find-file (expand-file-name "organizer.org" org-directory)))
-  :hook
-  (org-agenda-mode-hook . hcps/hide-evil-tag)
   :custom
   (org-columns-default-format
    "%20CATEGORY(FILE) %35ITEM(TASK) %PRIORITY(P) %EFFORT(E) %DEADLINE(D) %TAGS(T)")
