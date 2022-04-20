@@ -3723,9 +3723,7 @@ Statistics/. It provides you with everything you need from R.
   (:keymaps 'ess-r-mode-map
    :prefix hcps/leader-key
    "m c" #'ess-eval-region-or-function-or-paragraph-and-step
-   "m r" #'ess-eval-region)
-  (:keymaps 'ess-r-mode-map
-   :prefix hcps/leader-key
+   "m r" #'ess-eval-region
    "m e" #'Rd-mode-insert-skeleton
    "m f" #'Rd-font
    "m j" #'Rd-mode-insert-item
