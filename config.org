@@ -4104,6 +4104,11 @@ use.
 
 #+begin_src emacs-lisp :tangle yes
 (use-package auctex-latexmk
+  :straight
+  (auctex-latexmk
+   :type git
+   :host github
+   :repo "wang1zhen/auctex-latexmk")
   :after tex
   :demand t
   :config
