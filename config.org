@@ -3912,9 +3912,7 @@ Finally, the mode's final configuration
    (lisp-mode-hook . lispy-mode)
    (lisp-mode-hook . lisp-extra-font-lock-mode))
   :custom
-  (lisp-indent-function #'fuco1/lisp-indent-function)
-  :config
-  (setq-mode-local lisp-mode comment-start ";; "))
+  (lisp-indent-function #'fuco1/lisp-indent-function))
 #+end_src
 
 ** Elisp
@@ -3937,7 +3935,6 @@ Emacs version!
   ((after-save-hook      . recompile-elc-on-save)
    (emacs-lisp-mode-hook . (lambda () (run-hooks 'lisp-mode-hook))))
   :config
-  (setq-mode-local emacs-lisp-mode comment-start ";; ")
   (require 'use-package))
 #+end_src
 
