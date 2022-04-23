@@ -16,3 +16,5 @@ org-mode
 
 (n "#+name: " p)
 (t "#+title: " p)
+(d "#+date: " (format-time-string "%F") n)
+(D "#+date: " (format-time-string "%a %e %b %Y") n)
